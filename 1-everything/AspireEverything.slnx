@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="AspireEverything.AppHost/AspireEverything.AppHost.csproj" />
+  <Project Path="AspireEverything.FrameworkApi.Tests/AspireEverything.FrameworkApi.Tests.csproj" Id="a70d4d9a-8176-401d-a8dc-f90d3eaea527" />
+  <Project Path="AspireEverything.FrameworkApi/AspireEverything.FrameworkApi.csproj" />
+  <Project Path="AspireEverything.ServiceDefaults/AspireEverything.ServiceDefaults.csproj" />
+  <Project Path="AspireEverything.VoteData/AspireEverything.VoteData.csproj" Id="a0af71ab-d4ea-4b17-8d4d-08f0da7bc549" />
+  <Project Path="AspireEverything.VoteGet/AspireEverything.VoteGet.csproj" />
+  <Project Path="AspireEverything.VoteScore/AspireEverything.VoteScore.csproj" />
+</Solution>

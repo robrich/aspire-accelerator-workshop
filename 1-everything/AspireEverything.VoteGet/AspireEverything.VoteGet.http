@@ -1,0 +1,5 @@
+@AspireEverything.VoteGet_HostAddress = http://localhost:7284
+
+### Get all votes
+
+GET {{AspireEverything.VoteGet_HostAddress}}/api/vote/get

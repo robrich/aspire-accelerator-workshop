@@ -1,0 +1,21 @@
+@AspireEverything.VoteScore_HostAddress = http://localhost:7105
+
+### Add a vote
+
+@id=1
+POST {{AspireEverything.VoteScore_HostAddress}}/api/vote/score/{{id}}
+Content-Type: application/json
+
+{
+  "score": 1
+}
+
+### Remove a vote
+
+@id=1
+POST {{AspireEverything.VoteScore_HostAddress}}/api/vote/score/{{id}}
+Content-Type: application/json
+
+{
+  "score": -1
+}

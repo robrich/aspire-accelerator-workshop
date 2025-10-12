@@ -1,0 +1,15 @@
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.OutputCaching;
+global using Microsoft.Azure.Functions.Worker;
+global using Microsoft.Azure.Functions.Worker.Builder;
+global using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Abstractions;
+global using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+global using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Configurations;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.OpenApi.Models;
+global using AspireEverything.VoteData;

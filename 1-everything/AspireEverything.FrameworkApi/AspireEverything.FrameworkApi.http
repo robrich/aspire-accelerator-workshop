@@ -1,0 +1,48 @@
+@AspireEverything.FrameworkApi_HostAddress = http://localhost:5000
+
+### Home page: "Backend is running!"
+GET {{AspireEverything.FrameworkApi_HostAddress}}/
+
+### Get all
+
+GET {{AspireEverything.FrameworkApi_HostAddress}}/api/framework
+
+### Create
+
+POST {{AspireEverything.FrameworkApi_HostAddress}}/api/framework
+Content-Type: application/json
+
+{
+  "name": "test"
+}
+
+### Get by id
+
+@id=1
+GET {{AspireEverything.FrameworkApi_HostAddress}}/api/framework/{{id}}
+
+### Update
+
+@id=1
+PUT {{AspireEverything.FrameworkApi_HostAddress}}/api/framework/{{id}}
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "updated name"
+}
+
+### Delete
+
+@id=1
+DELETE {{AspireEverything.FrameworkApi_HostAddress}}/api/framework/{{id}}
+
+### Error page
+
+GET {{AspireEverything.FrameworkApi_HostAddress}}/error
+
+### Not found page
+
+GET {{AspireEverything.FrameworkApi_HostAddress}}/not/found/url
+
+###

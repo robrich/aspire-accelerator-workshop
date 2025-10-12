@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "AspireEverything.VoteAdd": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7105",
+      "launchBrowser": false,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

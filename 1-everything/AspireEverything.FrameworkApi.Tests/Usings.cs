@@ -1,0 +1,13 @@
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.AspNetCore.Mvc.Testing;
+global using Microsoft.VisualStudio.TestPlatform.TestHost;
+global using System.Net.Http.Json;
+global using Meziantou.Extensions.Logging.Xunit;
+global using Respawn;
+global using Shouldly;
+global using Xunit.Abstractions;
+global using AspireEverything.FrameworkApi.Data;
+global using AspireEverything.FrameworkApi.Tests.Fixtures;

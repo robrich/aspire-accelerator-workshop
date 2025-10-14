@@ -41,7 +41,7 @@ Upgrading
    - a Redis cache
    - a reference from Redis to both apps
 
-   TODO: this needs very much more detail !!!
+   HACK: this needs very much more detail !!!
 
 5. We don't need to modify the Redis connection string, but we do need to modify the config for the API url.  The setting is no longer in ~~`AppSettings:WeatherApi`~~.  It's now in `services:apiservice:https:0`.  Thanks service discovery!
 

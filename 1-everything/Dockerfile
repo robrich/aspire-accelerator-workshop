@@ -39,27 +39,6 @@ ENV ConnectionStrings__voting=""
 CMD ["dotnet", "test", "-c", "Release", "--no-restore", "--logger:junit;LogFilePath=../results/integration.xml"]
 
 
-# react build "server" image
-FROM node:alpine AS react-build
-
-WORKDIR /src
-COPY AspireEverything.WebReact/package.json ./
-RUN npm install
-COPY AspireEverything.WebReact/ ./
-RUN npm run build
-
-
-# node production "server" image
-FROM nginx:alpine AS react
-
-COPY --from=react-build /src/dist /usr/share/nginx/html
-COPY AspireEverything.WebReact/nginx.conf /etc/nginx/nginx.conf
-EXPOSE 80
-# Nginx already has a CMD
-
-# TODO: build a Vue.js image too
-
-
 # production runtime "server" image for VoteGet function
 # TODO: is there an alpine version?
 FROM mcr.microsoft.com/azure-functions/dotnet-isolated:4-dotnet-isolated9.0 AS func-voteget

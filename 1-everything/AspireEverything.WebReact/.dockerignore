@@ -1,22 +1,12 @@
 # downloaded files
 **/node_modules
 # built files
-**/bin
-**/obj
 **/dist
 # temp files
 **/.DS_Store
 **/*.tmp
 **/*.log
 # user-specific files
-**/.vs
-**/*.user
-**/*.suo
-**/local.settings.json
-**/package-lock.json
-**/pg-data
 # secrets
 **/.env
 # non-production files
-**/launchSettings.json
-**/appsettings.Development.json

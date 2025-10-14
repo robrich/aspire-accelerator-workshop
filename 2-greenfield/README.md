@@ -81,4 +81,6 @@ See also the [Aspire documentation](https://learn.microsoft.com/en-us/dotnet/asp
 Aspire Dashboard
 ----------------
 
-TODO: teach them how to use the Aspire dashboard !!!
+HACK: teach them how to use the Aspire dashboard !!!
+
+- each project's console is now in the Aspire dashboard

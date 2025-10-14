@@ -8,7 +8,7 @@ This is an Aspire workshop to get you up-and-running with both development time 
 
 
 
-TODO: describe the workshop !!!
+HACK: describe the workshop !!!
 
 
 

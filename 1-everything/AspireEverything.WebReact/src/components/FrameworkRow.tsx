@@ -60,7 +60,7 @@ export default function FrameworkRow({ framework, onSaveFramework, onSaveVote }:
             <div className="col-auto">
               <form onSubmit={saveEdit}>
                 <div className="d-flex">
-                  <input value={editName} onChange={e => setEditName(e.target.value)} className="form-control me-2" />
+                  <input value={editName} onChange={e => setEditName(e.target.value)} className="form-control me-2" required maxLength={200} />
                   <button type="submit" className="btn btn-primary mt-2">
                     <i className="fa-solid fa-floppy-disk" />
                   </button>

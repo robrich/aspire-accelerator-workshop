@@ -62,13 +62,3 @@ After the upgrade, launching the app is super simple.
 3. Begin debugging.
 
 The Redis connection string gets auto-magically injected into both apps, and the API URL gets injected too.
-
-
-Next
-----
-
-Now that you have experience adding Aspire to an existing project, you can be empowered to add Aspire to other projects.
-
-1. Locate a modern .NET solution (.NET 8 or better) you'd like to upgrade.  This could be a hobby project, a work project, an open source project, or any other project.
-
-2. Follow the above upgrade steps to add Aspire to this project too.

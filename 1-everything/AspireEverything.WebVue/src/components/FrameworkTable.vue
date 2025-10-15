@@ -11,7 +11,7 @@
         <form @submit.stop.prevent="submitNewFramework">
           <div class="row">
             <div class="col">
-              <input type="text" class="form-control" id="name" v-model="newName" placeholder="Add a new Framework" />
+              <input type="text" class="form-control" id="name" v-model="newName" placeholder="Add a new Framework" required maxlength="200" />
             </div>
             <div class="col">
               <button type="submit" class="btn btn-primary">Add Framework</button>

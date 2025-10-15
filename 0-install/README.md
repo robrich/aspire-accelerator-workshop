@@ -13,28 +13,29 @@ You'll need a few things installed to use the content in this workshop:
 
 2. Install the [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet).
 
-3. Install or upgrade the Azure Functions Runtime
+3. Install and upgrade the Azure Functions Runtime
 
-   Install the latest [Azure Functions Runtime](https://github.com/Azure/azure-functions-core-tools#installing) using your favorite method:
+   a. Install the latest [Azure Functions Runtime](https://github.com/Azure/azure-functions-core-tools#installing) using your favorite method:
 
-   - Windows MSI: https://go.microsoft.com/fwlink/?linkid=2174087
-   - NPM: `npm i -g azure-functions-core-tools@4`
-   - Chocolatey: `choco install azure-functions-core-tools`
-   - WinGet: `winget install Microsoft.Azure.FunctionsCoreTools`
-   - MacOS:
-     ```sh
-     brew tap azure/functions
-     brew install azure-functions-core-tools@4
-     ```
-   - Linux: See https://github.com/Azure/azure-functions-core-tools#linux
+      - Windows MSI: https://go.microsoft.com/fwlink/?linkid=2174087
+      - NPM: `npm i -g azure-functions-core-tools@4`
+      - Chocolatey: `choco install azure-functions-core-tools`
+      - WinGet: `winget install Microsoft.Azure.FunctionsCoreTools`
+      - MacOS: `brew tap azure/functions; brew install azure-functions-core-tools@4`
+      - Linux: See https://github.com/Azure/azure-functions-core-tools#linux
 
-4. Upgrade the Azure Functions Runtime:
+   OR
 
-   - NPM `npm install -g azure-functions-core-tools@4`
-   - Chocolatey: `choco upgrade azure-functions-core-tools`
-   - MacOS: `brew upgrade azure-functions-core-tools`
+   b. Upgrade the Azure Functions Runtime:
 
-5. Upgrade the Azure Functions new project templates:
+      - Windows MSI: https://go.microsoft.com/fwlink/?linkid=2174087
+      - NPM `npm install -g azure-functions-core-tools@4`
+      - Chocolatey: `choco upgrade azure-functions-core-tools`
+      - WinGet: `winget upgrade Microsoft.Azure.FunctionsCoreTools`
+      - MacOS: `brew upgrade azure-functions-core-tools`
+      - Linux: See https://github.com/Azure/azure-functions-core-tools#linux
+
+4. Upgrade the Azure Functions new project templates:
 
    In Visual Studio:
 
@@ -51,7 +52,7 @@ You'll need a few things installed to use the content in this workshop:
    - Open the command palette: cntrl + shift + p
    - Run `Azure Functions: Install or Update Core Tools`
 
-6. Install or upgrade the Aspire CLI
+5. Install or upgrade the Aspire CLI
 
    Open a terminal in any directory and run:
 

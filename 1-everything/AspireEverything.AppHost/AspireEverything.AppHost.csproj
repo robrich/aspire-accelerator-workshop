@@ -14,11 +14,14 @@
     <ProjectReference Include="..\AspireEverything.FrameworkApi\AspireEverything.FrameworkApi.csproj" />
     <ProjectReference Include="..\AspireEverything.VoteScore\AspireEverything.VoteScore.csproj" />
     <ProjectReference Include="..\AspireEverything.VoteGet\AspireEverything.VoteGet.csproj" />
+    <ProjectReference Include="..\AspireEverything.WebBlazor\AspireEverything.WebBlazor.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" Version="9.5.1" />
     <PackageReference Include="Aspire.Hosting.Azure.Functions" Version="9.5.1-preview.1.25502.11" />
+    <PackageReference Include="Aspire.Hosting.Docker" Version="9.5.1-preview.1.25502.11" />
+    <PackageReference Include="Aspire.Hosting.Kubernetes" Version="9.5.1-preview.1.25502.11" />
     <PackageReference Include="Aspire.Hosting.NodeJs" Version="9.5.1" />
     <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.5.1" />
     <PackageReference Include="Aspire.Hosting.Redis" Version="9.5.1" />

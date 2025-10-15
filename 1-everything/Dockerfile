@@ -1,3 +1,5 @@
+# FRAGILE: aspire CLI doesn't use this Dockerfile. It uses the .NET SDK to build images instead.
+
 # build "server" image
 FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 

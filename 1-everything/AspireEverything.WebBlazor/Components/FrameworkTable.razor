@@ -1,0 +1,97 @@
+@inject HttpClient httpClient
+
+<div class="card">
+	<div class="card-body">
+		<form @onsubmit="SaveNewFramework">
+			<div class="row">
+				<div class="col">
+					<input type="text" class="form-control" id="name" @bind="newName" placeholder="Add a new Framework" />
+				</div>
+				<div class="col">
+					<button type="submit" class="btn btn-primary">Add Framework</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row mt-4">
+	<div class="col-md-8">
+		<h2 class="text-center">Frameworks</h2>
+	</div>
+	<div class="col-md-4 text-end">
+		<button class="btn btn-primary" @onclick="Refresh">Refresh</button>
+	</div>
+</div>
+
+<div class="row">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Votes</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var f in frameworkVotes)
+			{
+				<FrameworkRow Framework="f" OnSaveFramework="UpdateFramework" OnSaveVote="SaveVote" />
+			}
+		</tbody>
+	</table>
+</div>
+
+@code {
+	// TODO: better handle errors
+
+	private List<FrameworkScore> frameworkVotes = [];
+	private string newName = "";
+
+	protected override async Task OnInitializedAsync()
+	{
+		await Refresh();
+	}
+
+	private async Task Refresh()
+	{
+		var frameworksTask = httpClient.GetFromJsonAsync<Framework[]>("/api/framework");
+		var votesTask = httpClient.GetFromJsonAsync<Vote[]>("/api/vote/get");
+		var frameworks = await frameworksTask ?? [];
+		var votes = await votesTask ?? [];
+		frameworkVotes = (
+			from f in frameworks
+			let v = votes.FirstOrDefault(v => v.FrameworkId == f.Id)
+			select new FrameworkScore
+			{
+				Id = f.Id,
+				Name = f.Name,
+				Score = v?.Score ?? 0
+			}
+		).ToList();
+	}
+
+	private async Task SaveNewFramework()
+	{
+		var framework = new Framework
+		{
+			Id = 0,
+			Name = newName
+		};
+		var response = await httpClient.PostAsJsonAsync("/api/framework", framework);
+		await Refresh();
+	}
+
+	private async Task UpdateFramework(Framework framework)
+	{
+		var response = await httpClient.PutAsJsonAsync($"/api/framework/{framework.Id}", framework);
+		await Refresh();
+	}
+
+	private async Task SaveVote(VoteScore score)
+	{
+		var response = await httpClient.PostAsJsonAsync($"/api/vote/score/{score.FrameworkId}", new { score = score.Score });
+		await Refresh();
+	}
+
+}

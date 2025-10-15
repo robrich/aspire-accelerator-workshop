@@ -58,7 +58,7 @@ export default function FrameworkTable() {
           <form onSubmit={(e: React.FormEvent) => { e.preventDefault(); void submitNewFramework(); }}>
             <div className="row">
               <div className="col">
-                <input type="text" className="form-control" id="name" value={newName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewName(e.target.value)} placeholder="Add a new Framework" />
+                <input type="text" className="form-control" id="name" value={newName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewName(e.target.value)} placeholder="Add a new Framework" required maxLength={200} />
               </div>
               <div className="col">
                 <button type="submit" className="btn btn-primary">Add Framework</button>

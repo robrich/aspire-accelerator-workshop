@@ -1,0 +1,14 @@
+{
+  "/api/framework": {
+    "target": "http://localhost:5000",
+    "secure": false
+  },
+  "/api/vote/get": {
+    "target": "http://localhost:7284",
+    "secure": false
+  },
+  "/api/vote/score": {
+    "target": "http://localhost:7015",
+    "secure": false
+  }
+}

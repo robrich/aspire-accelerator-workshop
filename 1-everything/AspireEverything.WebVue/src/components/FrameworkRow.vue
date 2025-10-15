@@ -22,7 +22,7 @@
       <div class="col-auto">
         <form @submit.prevent="saveEdit">
           <div class="d-flex">
-            <input v-model="editName" class="form-control me-2" />
+            <input v-model="editName" class="form-control me-2" required maxlength="200" />
             <button type="submit" class="btn btn-primary mt-2">
               <i class="fa-solid fa-floppy-disk"></i>
             </button>

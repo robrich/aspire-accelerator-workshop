@@ -1,0 +1,96 @@
+<tr>
+	<td>
+		<span class="pt-2 px-3 d-inline-block">
+			@Framework.Id
+		</span>
+	</td>
+	<td>
+		@if (isEditing)
+		{
+			<div class="row">
+				<div class="col-auto">
+					<button class="btn btn-secondary mt-2 ms-2" @onclick="ChangeEditing">
+					  <i class="fa-solid fa-xmark"></i>
+					</button>
+				</div>
+				<div class="col-auto">
+					<form @onsubmit="SaveFramework">
+						<input class="form-control me-2" @bind="newName" required maxlength="200" />
+						<button type="submit" class="btn btn-primary mt-2">
+						  <i class="fa-solid fa-floppy-disk"></i>
+						</button>
+					</form>
+				</div>
+			</div>
+		}
+		else
+		{
+			<button @onclick="ChangeEditing" class="btn btn-secondary mt-2 ms-2">
+				<i class="fa-solid fa-pencil"></i>
+			</button>
+			<span class="pt-2 px-3 d-inline-block">
+				@Framework.Name
+			</span>
+		}
+	</td>
+	<td>
+		<button class="btn btn-secondary mt-2 ms-2" @onclick="VoteDown"><i class="fa-solid fa-minus"></i></button>
+		<span class="pt-2 px-3 d-inline-block">
+			@Framework.Score
+		</span>
+		<button class="btn btn-secondary mt-2 ms-2" @onclick="VoteUp"><i class="fa-solid fa-plus"></i></button>
+	</td>
+</tr>
+
+@code {
+	[Parameter]
+	public FrameworkScore Framework { get; set; } = null!;
+
+	[Parameter]
+	public EventCallback<Framework> OnSaveFramework { get; set; }
+
+	[Parameter]
+	public EventCallback<VoteScore> OnSaveVote { get; set; }
+
+	private bool isEditing = false;
+	private string newName = "";
+
+	private void ChangeEditing()
+	{
+		isEditing = !isEditing;
+		newName = Framework.Name;
+	}
+
+	private async Task SaveFramework()
+	{
+		Framework.Name = newName;
+		Framework framework = new Framework
+		{
+			Id = Framework.Id,
+			Name = newName
+		};
+		await OnSaveFramework.InvokeAsync(framework);
+		isEditing = false;
+	}
+
+	private async Task VoteUp()
+	{
+		Framework.Score++;
+		VoteScore score = new VoteScore
+		{
+			FrameworkId = Framework.Id,
+			Score = 1
+		};
+       await OnSaveVote.InvokeAsync(score);
+ 	}
+	private async Task VoteDown()
+	{
+		Framework.Score--;
+		VoteScore score = new VoteScore
+		{
+			FrameworkId = Framework.Id,
+			Score = -1
+		};
+		await OnSaveVote.InvokeAsync(score);
+	}
+}

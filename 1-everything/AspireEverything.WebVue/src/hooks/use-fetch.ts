@@ -60,7 +60,7 @@ export function useFetch<T>(args: UseFetchOptions) {
         console.error('Fetch error', results.value.status);
         return results.value;
       }
-      results.value.data = (await res.json()) as T?;
+      results.value.data = (await res.json()) as T | null;
       results.value.error = null;
       console.log(`Fetch successful ${args.method} ${url}`, results.value.data);
     } catch (e) {

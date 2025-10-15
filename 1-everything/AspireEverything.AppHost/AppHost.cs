@@ -1,6 +1,10 @@
 
 var builder = DistributedApplication.CreateBuilder(args);
 
+string deployTo = "docker-compose";
+builder.AddDockerComposeEnvironment("compose");
+//builder.AddKubernetesEnvironment("k8s");
+
 var sqlUsername = builder.AddParameter("postgresql-username", secret: true);
 var sqlPassword = builder.AddParameter("postgresql-password", secret: true);
 var dbName = "voting";
@@ -38,13 +42,23 @@ var frontendVue = builder.AddNpmApp("frontendVue", "../AspireEverything.WebVue",
     .WithReference(funcVoteGet).WaitFor(funcVoteGet)
     .WithReference(funcVoteScore).WaitFor(funcVoteScore)
     .WithHttpEndpoint(env: "PORT")
-    .WithExternalHttpEndpoints(); // If you're using it directly. If you're using the gateway, you can remove ExternalHttpEndpoints
+    .WithExternalHttpEndpoints() // If you're using it directly. If you're using the gateway, you can remove ExternalHttpEndpoints
+    .PublishAsDockerFile();
 
 var frontendReact = builder.AddNpmApp("frontendReact", "../AspireEverything.WebReact", "dev")
     .WithReference(frameworkApi).WaitFor(frameworkApi)
     .WithReference(funcVoteGet).WaitFor(funcVoteGet)
     .WithReference(funcVoteScore).WaitFor(funcVoteScore)
     .WithHttpEndpoint(env: "PORT")
+    .WithExternalHttpEndpoints() // If you're using it directly. If you're using the gateway, you can remove ExternalHttpEndpoints
+    .PublishAsDockerFile();
+
+// FRAGILE: Can't use this directly. Must use it through the proxy.
+// Aspire doesn't load a Blazor WebAssembly using `dotnet run` so proxy.config.json doesn't work
+var frontendBlazor = builder.AddProject<Projects.AspireEverything_WebBlazor>("frontendBlazor")
+    .WithReference(frameworkApi).WaitFor(frameworkApi)
+    .WithReference(funcVoteGet).WaitFor(funcVoteGet)
+    .WithReference(funcVoteScore).WaitFor(funcVoteScore)
     .WithExternalHttpEndpoints(); // If you're using it directly. If you're using the gateway, you can remove ExternalHttpEndpoints
 
 var gateway = builder.AddYarp("gateway")
@@ -56,7 +70,7 @@ var gateway = builder.AddYarp("gateway")
 
         yarp.AddRoute("/api/{**catch-all}", frameworkApi); // technically only /api/framework
 
-        yarp.AddRoute(frontendVue); // or frontendReact
+        yarp.AddRoute(frontendReact); // or frontendReact or frontendVue or frontendBlazor
     });
 
 builder.Build().Run();

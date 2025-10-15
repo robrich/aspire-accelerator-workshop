@@ -2,9 +2,9 @@
 FROM node:alpine AS react-build
 
 WORKDIR /src
-COPY AspireEverything.WebReact/package.json ./
+COPY package.json .
 RUN npm install
-COPY AspireEverything.WebReact/ ./
+COPY . .
 RUN npm run build
 
 
@@ -12,6 +12,6 @@ RUN npm run build
 FROM nginx:alpine AS react
 
 COPY --from=react-build /src/dist /usr/share/nginx/html
-COPY AspireEverything.WebReact/nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
 # Nginx already has a CMD

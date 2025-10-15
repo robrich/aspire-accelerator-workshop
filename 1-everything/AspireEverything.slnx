@@ -6,4 +6,5 @@
   <Project Path="AspireEverything.VoteData/AspireEverything.VoteData.csproj" Id="a0af71ab-d4ea-4b17-8d4d-08f0da7bc549" />
   <Project Path="AspireEverything.VoteGet/AspireEverything.VoteGet.csproj" />
   <Project Path="AspireEverything.VoteScore/AspireEverything.VoteScore.csproj" />
+  <Project Path="AspireEverything.WebBlazor/AspireEverything.WebBlazor.csproj" />
 </Solution>

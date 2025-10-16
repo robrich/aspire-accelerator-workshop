@@ -1,5 +1,5 @@
 # build "server" image
-FROM node:alpine AS react-build
+FROM node:alpine AS build
 
 WORKDIR /src
 COPY package.json .
@@ -9,9 +9,12 @@ RUN npm run build
 
 
 # production "server" image
-FROM nginx:alpine AS react
+FROM nginx:alpine
 
-COPY --from=react-build /src/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
+WORKDIR /usr/share/nginx/html
 EXPOSE 80
+
+COPY --from=build /src/dist .
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Nginx already has a CMD

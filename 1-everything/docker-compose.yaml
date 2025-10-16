@@ -1,0 +1,226 @@
+# A Docker Compose file for local debugging
+# `docker compose up`
+
+services:
+
+  compose-dashboard:
+    image: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest"
+    ports:
+      - 8000:8000 # web: http://localhost:8000
+      - 4317:18889 # gRPC collector
+      - 4318:18890 # http collector
+    expose:
+      - 8000
+      - 18889
+      - 18890
+    environment:
+      ASPNETCORE_URLS: http://0.0.0.0:8000
+      DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: true
+      DASHBOARD__OTLP__CORS__ALLOWEDORIGINS: '*'
+      DASHBOARD__OTLP__CORS__ALLOWEDHEADERS: '*'
+    networks:
+      - "aspire"
+    restart: "always"
+
+  postgres:
+    image: "postgres:alpine"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
+      POSTGRES_USER: "${POSTGRESQL_USERNAME}"
+      POSTGRES_PASSWORD: "${POSTGRESQL_PASSWORD}"
+      POSTGRES_DB: "voting"
+    expose:
+      - "5432"
+    volumes:
+      - type: "volume"
+        target: "/var/lib/postgresql/data"
+        source: "pg-data"
+        read_only: false
+      - type: "bind"
+        target: "/docker-entrypoint-initdb.d"
+        source: "./postgres-init"
+        read_only: false
+    networks:
+      - "aspire"
+
+  # TODO: Add PgWeb
+
+  cache:
+    image: "redis:alpine"
+    command:
+      - "-c"
+      - "redis-server --requirepass $$REDIS_PASSWORD --save 60 1"
+    entrypoint:
+      - "/bin/sh"
+    environment:
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+    expose:
+      - "6379"
+    volumes:
+      - type: "volume"
+        target: "/data"
+        source: "redis-data"
+        read_only: false
+    networks:
+      - "aspire"
+
+  # TODO: Add Redis Commander
+
+  azurite:
+    image: "mcr.microsoft.com/azure-storage/azurite"
+    command: [ "azurite", "--location", "/data", "--blobHost", "0.0.0.0", "--queueHost", "0.0.0.0", "--tableHost", "0.0.0.0" ]
+    expose:
+      - "10000" # blob
+      - "10001" # queue
+      - "10002" # table
+    volumes:
+      - type: "volume"
+        target: "/data"
+        source: "azurite-data"
+        read_only: false
+    networks:
+      - "aspire"
+
+  frameworkapi:
+    image: ${ACR_URL}/aspire-frameworkapi:${IMAGE_LABEL}
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__voting: "Host=postgres;Port=5432;Username=${POSTGRESQL_USERNAME};Password=${POSTGRESQL_PASSWORD};Database=voting"
+      ConnectionStrings__cache: "cache:6379,password=${REDIS_PASSWORD}"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://compose-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "frameworkapi"
+    ports:
+      - 5000:8080
+    depends_on:
+      postgres:
+        condition: "service_started"
+      cache:
+        condition: "service_started"
+    networks:
+      - "aspire"
+
+  funcvoteget:
+    image: ${ACR_URL}/aspire-func-voteget:${IMAGE_LABEL}
+    environment:
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      FUNCTIONS_WORKER_RUNTIME: "dotnet-isolated"
+      ASPNETCORE_URLS: "http://+:80"
+      ConnectionStrings__voting: "Host=postgres;Port=5432;Username=${POSTGRESQL_USERNAME};Password=${POSTGRESQL_PASSWORD};Database=voting"
+      ConnectionStrings__cache: "cache:6379,password=${REDIS_PASSWORD}"
+      AzureWebJobsStorage: "UseDevelopmentStorage=true"
+      AzureFunctionsJobHost__telemetryMode: "OpenTelemetry"
+      AzureWebJobsStorage__blobServiceUri: "http://azurite:10000/devstoreaccount1"
+      AzureWebJobsStorage__queueServiceUri: "http://azurite:10001/devstoreaccount1"
+      AzureWebJobsStorage__tableServiceUri: "http://azurite:10002/devstoreaccount1"
+      Aspire__Azure__Storage__Blobs__AzureWebJobsStorage__ServiceUri: "http://azurite:10000/devstoreaccount1"
+      Aspire__Azure__Storage__Queues__AzureWebJobsStorage__ServiceUri: "http://azurite:10001/devstoreaccount1"
+      Aspire__Azure__Data__Tables__AzureWebJobsStorage__ServiceUri: "http://azurite:10002/devstoreaccount1"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://compose-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "funcVoteGet"
+    ports:
+      - 5001:80
+    depends_on:
+      postgres:
+        condition: "service_started"
+      cache:
+        condition: "service_started"
+      azurite:
+        condition: "service_started"
+    networks:
+      - "aspire"
+
+  funcvotescore:
+    image: ${ACR_URL}/aspire-func-votescore:${IMAGE_LABEL}
+    environment:
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      FUNCTIONS_WORKER_RUNTIME: "dotnet-isolated"
+      ASPNETCORE_URLS: "http://+:80"
+      ConnectionStrings__voting: "Host=postgres;Port=5432;Username=${POSTGRESQL_USERNAME};Password=${POSTGRESQL_PASSWORD};Database=voting"
+      AzureWebJobsStorage: "UseDevelopmentStorage=true"
+      AzureFunctionsJobHost__telemetryMode: "OpenTelemetry"
+      AzureWebJobsStorage__blobServiceUri: "http://azurite:10000/devstoreaccount1"
+      AzureWebJobsStorage__queueServiceUri: "http://azurite:10001/devstoreaccount1"
+      AzureWebJobsStorage__tableServiceUri: "http://azurite:10002/devstoreaccount1"
+      Aspire__Azure__Storage__Blobs__AzureWebJobsStorage__ServiceUri: "http://azurite:10000/devstoreaccount1"
+      Aspire__Azure__Storage__Queues__AzureWebJobsStorage__ServiceUri: "http://azurite:10001/devstoreaccount1"
+      Aspire__Azure__Data__Tables__AzureWebJobsStorage__ServiceUri: "http://azurite:10002/devstoreaccount1"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://compose-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "funcVoteScore"
+    ports:
+      - 5002:80
+    depends_on:
+      postgres:
+        condition: "service_started"
+      azurite:
+        condition: "service_started"
+    networks:
+      - "aspire"
+
+  frontend:
+    image: ${ACR_URL}/aspire-react:${IMAGE_LABEL} # or aspire-react or aspire-blazor
+    ports:
+      - 6000:80
+    expose:
+      - "80"
+    networks:
+      - "aspire"
+
+  gateway:
+    image: "mcr.microsoft.com/dotnet/nightly/yarp:2.3.0-preview.4"
+    command:
+      - "/app/yarp.dll"
+    entrypoint:
+      - "dotnet"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "http://+:5000"
+      REVERSEPROXY__ROUTES__route0__MATCH__PATH: "/api/vote/get"
+      REVERSEPROXY__ROUTES__route0__CLUSTERID: "cluster_funcVoteGet"
+      REVERSEPROXY__ROUTES__route1__MATCH__PATH: "/api/vote/score/{**catch-all}"
+      REVERSEPROXY__ROUTES__route1__CLUSTERID: "cluster_funcVoteScore"
+      REVERSEPROXY__ROUTES__route2__MATCH__PATH: "/api/{**catch-all}"
+      REVERSEPROXY__ROUTES__route2__CLUSTERID: "cluster_frameworkapi"
+      REVERSEPROXY__ROUTES__route3__MATCH__PATH: "/{**catchall}"
+      REVERSEPROXY__ROUTES__route3__CLUSTERID: "cluster_frontend"
+      REVERSEPROXY__CLUSTERS__cluster_funcVoteGet__DESTINATIONS__destination1__ADDRESS: "http://funcVoteGet"
+      REVERSEPROXY__CLUSTERS__cluster_funcVoteScore__DESTINATIONS__destination1__ADDRESS: "http://funcVoteScore"
+      REVERSEPROXY__CLUSTERS__cluster_frameworkapi__DESTINATIONS__destination1__ADDRESS: "http://frameworkapi"
+      REVERSEPROXY__CLUSTERS__cluster_frontend__DESTINATIONS__destination1__ADDRESS: "http://frontend"
+      services__frameworkapi__http__0: "http://frameworkapi:8080"
+      services__funcVoteGet__http__0: "http://funcVoteGet:80"
+      services__funcVoteScore__http__0: "http://funcVoteScore:80"
+      services__frontend__http__0: "http://frontend:80"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://compose-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "gateway"
+    ports:
+      - 8080:5000
+    networks:
+      - "aspire"
+
+networks:
+  aspire:
+    driver: "bridge"
+
+volumes:
+  pg-data:
+    driver: "local"
+  redis-data:
+    driver: "local"
+  azurite-data:
+    driver: "local"

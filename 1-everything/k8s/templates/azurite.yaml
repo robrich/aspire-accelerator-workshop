@@ -1,0 +1,85 @@
+# FRAGILE: In production, use Azure Storage
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azurite-headless
+spec:
+  clusterIP: None
+  selector:
+    app: azurite
+  ports:
+  - name: blob
+    port: 10000
+    targetPort: 10000
+  - name: queue
+    port: 10001
+    targetPort: 10001
+  - name: table
+    port: 10002
+    targetPort: 10002
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: azurite
+  labels:
+    app: azurite
+spec:
+  serviceName: azurite-headless
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azurite
+  template:
+    metadata:
+      labels:
+        app: azurite
+    spec:
+      containers:
+      - name: azurite
+        image: mcr.microsoft.com/azure-storage/azurite
+        args: [ "azurite", "--location", "/data", "--blobHost", "0.0.0.0", "--queueHost", "0.0.0.0", "--tableHost", "0.0.0.0" ]
+        ports:
+        - containerPort: 10000 # blob
+        - containerPort: 10001 # queue
+        - containerPort: 10002 # table
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        resources:
+          requests:
+            cpu: "25m"
+            memory: "64Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azurite
+  labels:
+    app: azurite
+spec:
+  selector:
+    app: azurite
+  type: NodePort
+  ports:
+  - name: blob
+    port: 10000
+    targetPort: 10000
+  - name: queue
+    port: 10001
+    targetPort: 10001
+  - name: table
+    port: 10002
+    targetPort: 10002

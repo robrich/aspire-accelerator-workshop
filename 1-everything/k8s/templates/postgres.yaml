@@ -1,0 +1,115 @@
+# FRAGILE: In production, use PaaS version of Postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-headless
+spec:
+  clusterIP: None
+  selector:
+    app: postgres
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  serviceName: postgres-headless
+  replicas: 1 # Not HA, but easy for this demo
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      securityContext:
+        fsGroup: 999
+        fsGroupChangePolicy: OnRootMismatch
+      initContainers:
+        - name: init-permissions
+          image: busybox:1.36
+          command: ["sh","-c","mkdir -p /var/lib/postgresql/data && chown -R 999:999 /var/lib/postgresql"]
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql
+      containers:
+        - name: postgres
+          image: postgres:alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+          env:
+            - name: POSTGRES_DB
+              value: {{ .Values.postgresDb }}
+            - name: POSTGRES_USER
+              value: {{ .Values.postgresUser }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.postgresPassword }}
+            - name: PGDATA
+              value: /var/lib/postgresql/data
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql
+            - name: init-scripts
+              mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
+      volumes:
+        - name: init-scripts
+          configMap:
+            name: postgres-init-scripts
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-scripts
+data:
+  init.sql: |
+    -- Postgres init script
+
+    -- Create the table
+    CREATE TABLE IF NOT EXISTS public.frameworks (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(200) NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS public.votes (
+        id SERIAL PRIMARY KEY,
+        frameworkid INTEGER REFERENCES public.frameworks(id),
+        score INTEGER NOT NULL DEFAULT 0
+    );
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  selector:
+    app: postgres
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
+---
+# TODO: add PgWeb

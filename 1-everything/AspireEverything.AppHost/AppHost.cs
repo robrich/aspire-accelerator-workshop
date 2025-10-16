@@ -21,7 +21,11 @@ switch (deployTo)
         builder.AddAzureContainerAppEnvironment("aca");
         break;
     case "none":
+<<<<<<< HEAD
         // when running locally with `aspire run`
+=======
+        // when running locally with `aspire run` it just creates a few nearly empty bicep files
+>>>>>>> 1e1498ca269d9a2cb4204db4feb1a3adc9e77f36
         break;
     default:
         throw new ArgumentOutOfRangeException("Don't know how to deploy to " + deployTo);
@@ -39,6 +43,10 @@ var postgres = builder.AddPostgres("postgres", userName: sqlUsername, password: 
 if (deployTo != "kubernetes")
 {
     // aspire publish to k8s doesn't know how to do bind mounts
+<<<<<<< HEAD
+=======
+    // see https://github.com/dotnet/aspire/issues/11267
+>>>>>>> 1e1498ca269d9a2cb4204db4feb1a3adc9e77f36
     postgres.WithBindMount("../postgres-init", "/docker-entrypoint-initdb.d");
 }
 
@@ -50,6 +58,10 @@ var cache = builder.AddRedis("cache")
 if (deployTo != "kubernetes")
 {
     // aspire publish to k8s doesn't know how to do bind mounts
+<<<<<<< HEAD
+=======
+    // see https://github.com/dotnet/aspire/issues/11267
+>>>>>>> 1e1498ca269d9a2cb4204db4feb1a3adc9e77f36
     cache.WithDataBindMount("../redis-data");
 }
 
@@ -90,13 +102,23 @@ if (deployTo != "docker-compose")
 {
     // FRAGILE: Can't use this directly. Must use it through the proxy.
     // Aspire doesn't load a Blazor WebAssembly using `dotnet run` so proxy.config.json doesn't work
+<<<<<<< HEAD
+=======
+    // see https://github.com/dotnet/aspire/issues/7524
+>>>>>>> 1e1498ca269d9a2cb4204db4feb1a3adc9e77f36
     var frontendBlazor = builder.AddProject<Projects.AspireEverything_WebBlazor>("frontendBlazor")
         .WithReference(frameworkApi).WaitFor(frameworkApi)
         .WithReference(funcVoteGet).WaitFor(funcVoteGet)
         .WithReference(funcVoteScore).WaitFor(funcVoteScore)
         .WithExternalHttpEndpoints(); // If you're using it directly. If you're using the gateway, you can remove ExternalHttpEndpoints
         //.PublishAsDockerFile(); // PublishAsDockerfile only works for executables, not for projects.
+<<<<<<< HEAD
     // FRAGILE: aspire publish doesn't use the correct base image for hosting the static assets
+=======
+
+    // FRAGILE: aspire publish doesn't use the correct base image for hosting the static assets
+    // see https://github.com/dotnet/aspire/issues/6781
+>>>>>>> 1e1498ca269d9a2cb4204db4feb1a3adc9e77f36
 }
 
 int gatewayPort = deployTo == "azure-container-apps" ? 80 : 8080; // ACA needs to be on port 80

@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+# A Docker Compose file for local debugging
+# `docker compose up`
+
+>>>>>>> 1e1498ca269d9a2cb4204db4feb1a3adc9e77f36
 services:
 
   compose-dashboard:

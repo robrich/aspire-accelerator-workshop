@@ -15,7 +15,7 @@ See also the [Aspire documentation](https://learn.microsoft.com/en-us/dotnet/asp
 
 2. Choose the `.NET Aspire Starter Application` from the list.
 
-3. If you don't have a container runtime, **uncheck** `use redis cache`.
+3. Check the option to `use redis cache`.
 
 4. Pick all other options that make sense to you.
 
@@ -45,6 +45,14 @@ See also the [Aspire documentation](https://learn.microsoft.com/en-us/dotnet/asp
 Aspire Dashboard
 ----------------
 
-HACK: teach them how to use the Aspire dashboard !!!
+Notice these features of the Aspire dashboard:
 
-- each project's console is now in the Aspire dashboard
+1. In the Resources tab, you can click each resource to see the details including environment variables and other configuration.
+
+2. In the Resources tab, you can switch between a list and a dependency graph.
+
+3. In the Console view you can pick the resource from the list at the top and see the full console logs for each project or service.  No more flipping between endless console windows to figure out what happened.
+
+4. In the Structured Logs view, the console logs are parsed, and errors are highlighted.
+
+5. In the Traces view, we see how one service calls another, allowing us to watch network calls flow through the system.

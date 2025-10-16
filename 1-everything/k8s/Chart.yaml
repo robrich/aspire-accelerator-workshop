@@ -1,6 +1,10 @@
 apiVersion: "v2"
 name: "aspire"
+<<<<<<< HEAD
 description: "Aspire Demo Helm Chart"
+=======
+description: "An Aspire Helm chart for running the sample in a demo self-contained cluster. You would use PaaS datastores in a production environment."
+>>>>>>> 1e1498ca269d9a2cb4204db4feb1a3adc9e77f36
 icon: "https://learn.microsoft.com/en-us/dotnet/media/dotnet-aspire-logo.png"
 
 type: "application"

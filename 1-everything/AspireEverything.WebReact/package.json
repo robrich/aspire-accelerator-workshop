@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "npm install && vite",
     "lint": "eslint --fix",
     "build": "tsc -b && vite build",
     "preview": "vite preview"

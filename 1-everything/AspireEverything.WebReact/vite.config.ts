@@ -15,8 +15,8 @@ const voteScore = process.env.services__funcVoteScore__http__0;
 console.log('Using port and proxying to', {
   port,
   '/api/framework': frameworkApi,
-  '/api/vote/get':
-  voteGet, '/api/vote/score': voteScore
+  '/api/vote/get': voteGet,
+  '/api/vote/score': voteScore
 });
 
 const proxy: Record<string, { target: string; changeOrigin: boolean }> = {};

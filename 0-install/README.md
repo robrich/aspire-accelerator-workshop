@@ -1,6 +1,23 @@
 Install Instructions
 ====================
 
+
+Table of Contents
+-----------------
+
+1. [Install an IDE](#1-install-an-ide)
+2. [Install the .NET 9 SDK](#2-install-the-net-9-sdk)
+3. [Install or upgrade the Aspire project templates](#3-install-or-upgrade-the-aspire-project-templates)
+4. [Install or upgrade the Aspire CLI](#4-install-or-upgrade-the-aspire-cli)
+5. [Install or upgrade the Azure Functions Runtime](#5-install-or-upgrade-the-azure-functions-runtime)
+6. [Upgrade the Azure Functions new project templates](#6-upgrade-the-azure-functions-new-project-templates)
+7. [Install the latest Node.js](#7-install-the-latest-nodejs)
+8. [Install a container runtime](#8-install-a-container-runtime)
+
+
+Install steps
+-------------
+
 You'll need a few things installed to use the content in this workshop:
 
 1. Install an IDE:
@@ -11,9 +28,35 @@ You'll need a few things installed to use the content in this workshop:
    - [VS Code](https://code.visualstudio.com/download)
    - your favorite editor that can edit both .NET and Node.js projects.
 
+   *Why?* An IDE is required to edit, build, and debug the .NET and Node.js projects in this workshop.
+
 2. Install the [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet).
 
-3. Install and upgrade the Azure Functions Runtime
+   *Why?* The .NET 9 SDK is required to build and run the backend services and APIs in this workshop.
+
+3. Install or upgrade the Aspire project templates:
+
+   Open a terminal in any directory and run:
+
+   ```sh
+   dotnet new install Aspire.ProjectTemplates
+   dotnet new update
+   ```
+
+   *Why?* Aspire project templates provide the scaffolding and structure for Aspire-based .NET projects used in this workshop.
+
+4. Install or upgrade the Aspire CLI
+
+   Open a terminal in any directory and run:
+
+   ```sh
+   dotnet tool install --global aspire.cli
+   dotnet tool update --global aspire.cli
+   ```
+
+   *Why?* The Aspire CLI is used to manage, run, and deploy Aspire projects from the command line.
+
+5. Install or upgrade the Azure Functions Runtime
 
    a. Install the latest [Azure Functions Runtime](https://github.com/Azure/azure-functions-core-tools#installing) using your favorite method:
 
@@ -35,7 +78,9 @@ You'll need a few things installed to use the content in this workshop:
       - MacOS: `brew upgrade azure-functions-core-tools`
       - Linux: See https://github.com/Azure/azure-functions-core-tools#linux
 
-4. Upgrade the Azure Functions new project templates:
+   *Why?* The Azure Functions Runtime is required to run and debug Azure Functions locally, which are used in this workshop.
+
+6. Upgrade the Azure Functions new project templates:
 
    In Visual Studio:
 
@@ -52,15 +97,17 @@ You'll need a few things installed to use the content in this workshop:
    - Open the command palette: cntrl + shift + p
    - Run `Azure Functions: Install or Update Core Tools`
 
-5. Install or upgrade the Aspire CLI
+   *Why?* Up-to-date project templates ensure you have the latest features and compatibility for creating new Azure Functions projects.
 
-   Open a terminal in any directory and run:
+7. Install the latest Node.js:
 
-   ```sh
-   dotnet tool install --global aspire.cli
-   ```
+   Download and install [Node.js](https://nodejs.org/en/download)
 
-7. Install [Node.js](https://nodejs.org/en/download) through the download on this site or through a Node Version Manager like [nvm](!!!!!!!!!!!!!!!)
+   OR
+
+   Use a Node Version Manager like [nvm](https://github.com/nvm-sh/nvm) or [nvm for windows](https://github.com/coreybutler/nvm-windows)
+
+   *Why?* Node.js is required to build and run the React and Vue frontend projects included in this workshop.
 
 8. Install a container runtime:
 
@@ -68,3 +115,9 @@ You'll need a few things installed to use the content in this workshop:
 
    - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
    - [Podman Desktop](https://podman-desktop.io/downloads)
+
+   *Why?* A container runtime is needed to build, run, and test containerized applications and services locally.
+
+9. Clone this repository onto your machine.
+
+   *Why?* You'll modify the code in this repository as part of this course.

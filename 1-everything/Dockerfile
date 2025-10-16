@@ -13,6 +13,7 @@ COPY AspireEverything.ServiceDefaults/AspireEverything.ServiceDefaults.csproj As
 COPY AspireEverything.VoteData/AspireEverything.VoteData.csproj AspireEverything.VoteData/AspireEverything.VoteData.csproj
 COPY AspireEverything.VoteGet/AspireEverything.VoteGet.csproj AspireEverything.VoteGet/AspireEverything.VoteGet.csproj
 COPY AspireEverything.VoteScore/AspireEverything.VoteScore.csproj AspireEverything.VoteScore/AspireEverything.VoteScore.csproj
+COPY AspireEverything.WebBlazor/AspireEverything.WebBlazor.csproj AspireEverything.WebBlazor/AspireEverything.WebBlazor.csproj
 
 RUN dotnet restore
 
@@ -22,7 +23,8 @@ RUN dotnet build -c Release --no-restore
 RUN dotnet test -c Release --logger:"junit;LogFilePath=../results/unit.xml" --no-restore --no-build --filter "Type!=Integration"
 RUN dotnet publish AspireEverything.FrameworkApi/AspireEverything.FrameworkApi.csproj -c Release -o /dist/api --no-restore --no-build
 RUN dotnet publish AspireEverything.VoteGet/AspireEverything.VoteGet.csproj -c Release -o /dist/func-voteget --no-restore --no-build
-RUN dotnet publish AspireEverything.VoteScore/AspireEverything.VoteScore.csproj -c Release -o /dist/job-votescore --no-restore --no-build
+RUN dotnet publish AspireEverything.VoteScore/AspireEverything.VoteScore.csproj -c Release -o /dist/func-votescore --no-restore --no-build
+RUN dotnet publish AspireEverything.WebBlazor/AspireEverything.WebBlazor.csproj -c Release -o /dist/blazor --no-restore --no-build
 
 
 # https://kevsoft.net/2021/08/09/exporting-unit-test-results-from-a-multi-stage-docker-build.html
@@ -66,7 +68,7 @@ COPY --from=build ["/dist/func-votescore", "/home/site/wwwroot"]
 
 
 # production runtime "server" image
-FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS api-base
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS frameworkapi
 
 # trust x-forwarded-for headers in linux
 # https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?#forward-the-scheme-for-linux-and-non-iis-reverse-proxies
@@ -88,3 +90,12 @@ WORKDIR /app
 
 COPY --from=build --chown=app /dist/api .
 CMD ["dotnet", "AspireEverything.FrameworkApi.dll"]
+
+
+# production runtime "server" image for Blazor WebAssembly
+FROM nginx:alpine AS blazor
+WORKDIR /usr/share/nginx/html
+EXPOSE 80
+COPY --from=build /dist/blazor .
+COPY AspireEverything.WebBlazor/nginx.conf /etc/nginx/nginx.conf
+# Nginx has its own CMD

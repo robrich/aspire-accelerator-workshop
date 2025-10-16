@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frameworkapi
+spec:
+  replicas: {{ .Values.replicas }}
+  revisionHistoryLimit: 2 # base-0 so '3' means 4 revisions
+  selector:
+    matchLabels:
+      app: frameworkapi
+  template:
+    metadata:
+      labels:
+        app: frameworkapi
+        version: {{ .Values.imageVersion }}
+    spec:
+      containers:
+      - name: frameworkapi
+        image: {{ .Values.acrUrl }}/aspire-frameworkapi:{{ .Values.imageVersion }}
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        - name: ASPNETCORE_URLS
+          value: "http://+:8080"
+        envFrom:
+        - secretRef:
+            name: aspire-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frameworkapi
+spec:
+  selector:
+    app: frameworkapi
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080

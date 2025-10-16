@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: func-voteget
+  labels:
+    app: func-voteget
+    version: IMAGE_LABEL
+spec:
+  #replicas: 1 # set by Keda
+  revisionHistoryLimit: 2 # base-0 so '3' means 4 revisions
+  selector:
+    matchLabels:
+      app: func-voteget
+  template:
+    metadata:
+      labels:
+        app: func-voteget
+        version: IMAGE_LABEL
+    spec:
+      containers:
+      - name: func-voteget
+        image: {{ .Values.acrUrl }}/aspire-func-voteget:{{ .Values.imageVersion }}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        env:
+        - name: OTEL_SERVICE_NAME
+          value: funcVoteGet
+        envFrom:
+        - configMapRef:
+            name: func-common-config
+        - secretRef:
+            name: aspire-secret
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+        startupProbe:
+          initialDelaySeconds: 10
+          failureThreshold: 12
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+        readinessProbe:
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: func-voteget
+spec:
+  type: NodePort
+  selector:
+    app: func-voteget
+  ports:
+  - port: 80
+    targetPort: 80
+---
+# KEDA function scaling using the Http Addon
+#apiVersion: http.keda.sh/v1alpha1
+#kind: HTTPScaledObject
+#metadata:
+#  name: func-voteget
+#spec:
+#  scaleTargetRef:
+#    deployment: func-voteget
+#    service: func-voteget
+#    port: 80
+#  replicas:
+#    min: 0
+#    max: 5
+#  targetPendingRequests: 100
+#  scaledownPeriod: 60
+#  scalingMetric:
+#    requestRate:
+#      granularity: 1s
+#      targetValue: 100
+#      window: 1m

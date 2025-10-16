@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aspire-ingress
+  #annotations:
+  #  cert-manager.io/cluster-issuer: letsencrypt
+  #  acme.cert-manager.io/http01-edit-in-place: "true"
+spec:
+  ingressClassName: nginx
+  #tls:
+  #- hosts:
+  #  - {{ .Values.aksUrl }}
+  #  secretName: tls-secret
+  rules:
+  #- host: {{ .Values.aksUrl }}
+  - http:
+      paths:
+      - pathType: Prefix
+        path: "/api/framework"
+        backend:
+          service:
+            name: frameworkapi
+            port:
+              number: 8080
+      - pathType: Prefix
+        path: "/api/vote/get"
+        backend:
+          service:
+            name: func-voteget
+            port:
+              number: 80
+      - pathType: Prefix
+        path: "/api/vote/score"
+        backend:
+          service:
+            name: func-votescore
+            port:
+              number: 80
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80

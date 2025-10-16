@@ -4,6 +4,7 @@ node_modules
 bin
 obj
 dist
+results
 # temp files
 .DS_Store
 *.tmp
@@ -15,5 +16,6 @@ dist
 local.settings.json
 package-lock.json
 pg-data
+redis-data
 # secrets
 .env

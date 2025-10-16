@@ -1,0 +1,8 @@
+apiVersion: "v2"
+name: "aspire"
+description: "Aspire Demo Helm Chart"
+icon: "https://learn.microsoft.com/en-us/dotnet/media/dotnet-aspire-logo.png"
+
+type: "application"
+appVersion: "0.0.1"
+version: "0.0.1"

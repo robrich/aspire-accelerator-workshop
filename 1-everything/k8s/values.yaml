@@ -1,0 +1,8 @@
+imageVersion: latest
+acrUrl: robrich.azurecr.io
+aksUrl: aspire.robrich.org
+postgresUser: postgres
+postgresPassword: Aspire123!
+postgresDb: voting
+redisPassword: Aspire123!
+replicas: 1

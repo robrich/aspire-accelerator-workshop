@@ -4,6 +4,7 @@ node_modules
 bin
 obj
 dist
+!**/lib/bootstrap/dist
 results
 # temp files
 .DS_Store

@@ -144,6 +144,7 @@ You'll need a few things installed to use the content in this workshop:
     docker pull mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest
     docker pull mcr.microsoft.com/dotnet/nightly/yarp:2.3.0-preview.4
     docker pull mcr.microsoft.com/azure-storage/azurite
+    docker pull mcr.microsoft.com/azure-storage/azurite:3.35.0
     docker pull postgres:alpine
     docker pull redis:alpine
     docker pull redis

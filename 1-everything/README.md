@@ -147,6 +147,8 @@ Here's the steps for running the sample locally:
 
 3. Open `AspireEverything.slnx` in Visual Studio or VS Code.
 
+   If this is the first time you've launched a `.slnx` file, it may ask you what application you'd like to use to launch it.  Choose your favorite IDE, and click `Always`.
+
 4. Set `AspireEverything.AppHost` as the startup project if it isn't already.
 
 5. In `AspireEverything.AppHost/AppHost.cs` choose which frontend you'd like to run:

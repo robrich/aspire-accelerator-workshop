@@ -36,7 +36,7 @@ var postgres = builder.AddPostgres("postgres", userName: sqlUsername, password: 
     .WithDataVolume("pg-data") // New data on each run
     //.WithDataBindMount("../pg-data") // Persist data between runs FRAGILE: postgres is really picky about WSL folder permissions
     .WithPgWeb(c => c.WithImageTag("latest"));
-if (deployTo != "kubernetes")
+if (!builder.ExecutionContext.IsRunMode && deployTo != "kubernetes")
 {
     // aspire publish to k8s doesn't know how to do bind mounts
     // see https://github.com/dotnet/aspire/issues/11267
@@ -48,7 +48,7 @@ var postgresdb = postgres.AddDatabase(dbName);
 var cache = builder.AddRedis("cache")
 	.WithImageTag("alpine")
 	.WithRedisCommander();
-if (deployTo != "kubernetes")
+if (!builder.ExecutionContext.IsRunMode && deployTo != "kubernetes")
 {
     // aspire publish to k8s doesn't know how to do bind mounts
     // see https://github.com/dotnet/aspire/issues/11267
@@ -76,19 +76,34 @@ var frontendVue = builder.AddNpmApp("frontendVue", "../AspireEverything.WebVue",
     .WithReference(funcVoteGet).WaitFor(funcVoteGet)
     .WithReference(funcVoteScore).WaitFor(funcVoteScore)
     .WithExternalHttpEndpoints() // If you're using it directly. If you're using the gateway, you can remove ExternalHttpEndpoints
-    .WithHttpEndpoint(env: "PORT", targetPort: 80)
     .PublishAsDockerFile();
+if (builder.ExecutionContext.IsRunMode)
+{
+    frontendVue.WithHttpEndpoint(env: "PORT");
+}
+else
+{
+    // when publishing, we want to use the port exposed by the container
+    frontendVue.WithHttpEndpoint(port: 80, targetPort: 80);
+}
 
 var frontendReact = builder.AddNpmApp("frontendReact", "../AspireEverything.WebReact", "dev")
     .WithReference(frameworkApi).WaitFor(frameworkApi)
     .WithReference(funcVoteGet).WaitFor(funcVoteGet)
     .WithReference(funcVoteScore).WaitFor(funcVoteScore)
     .WithExternalHttpEndpoints() // If you're using it directly. If you're using the gateway, you can remove ExternalHttpEndpoints
-    .WithHttpEndpoint(env: "PORT", targetPort: 80)
     .PublishAsDockerFile();
+if (builder.ExecutionContext.IsRunMode)
+{
+    frontendReact.WithHttpEndpoint(env: "PORT");
+}
+else
+{
+    // when publishing, we want to use the port exposed by the container
+    frontendReact.WithHttpEndpoint(port: 80, targetPort: 80);
+}
 
-
-if (deployTo != "docker-compose")
+if (builder.ExecutionContext.IsRunMode || deployTo != "docker-compose")
 {
     // FRAGILE: Can't use this directly. Must use it through the proxy.
     // Aspire doesn't load a Blazor WebAssembly using `dotnet run` so proxy.config.json doesn't work
@@ -104,7 +119,7 @@ if (deployTo != "docker-compose")
     // see https://github.com/dotnet/aspire/issues/6781
 }
 
-int gatewayPort = deployTo == "azure-container-apps" ? 80 : 8080; // ACA needs to be on port 80
+int gatewayPort = (!builder.ExecutionContext.IsRunMode && deployTo == "azure-container-apps") ? 80 : 8080; // deploying to ACA needs public port to be 80
 var gateway = builder.AddYarp("gateway")
     .WithHostPort(gatewayPort)
     .WithConfiguration(yarp =>

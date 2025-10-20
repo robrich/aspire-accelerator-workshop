@@ -16,5 +16,5 @@ EXPOSE 80
 
 COPY --from=build /src/dist .
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
+
 # Nginx already has a CMD

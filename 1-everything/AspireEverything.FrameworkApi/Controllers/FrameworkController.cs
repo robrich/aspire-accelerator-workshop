@@ -6,7 +6,7 @@ public class FrameworkController(IFrameworkRepository frameworkRepository, ILogg
 {
 
     // Get all
-    [OutputCache(Duration = 1)] // seconds
+    [OutputCache(Duration = 5)] // seconds
     [HttpGet]
     public List<Framework> GetAll()
     {
@@ -15,7 +15,7 @@ public class FrameworkController(IFrameworkRepository frameworkRepository, ILogg
     }
 
     // Get by id
-    [OutputCache(VaryByRouteValueNames = new[] { "id" }, Duration = 1)] // seconds
+    [OutputCache(VaryByRouteValueNames = new[] { "id" }, Duration = 5)] // seconds
     [HttpGet("{id}")]
     public ActionResult<Framework> GetById(int id)
     {

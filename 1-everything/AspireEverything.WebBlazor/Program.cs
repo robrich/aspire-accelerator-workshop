@@ -5,4 +5,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+// Can't reference ServiceDefaults project because Blazor is compiled into static files
+
 await builder.Build().RunAsync();

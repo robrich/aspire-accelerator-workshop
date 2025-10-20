@@ -10,7 +10,19 @@ const frameworkApi = process.env.services__frameworkapi__http__0;
 const voteGet = process.env.services__funcVoteGet__http__0;
 const voteScore = process.env.services__funcVoteScore__http__0;
 
-// TODO: also grab OTEL variables
+// Shim the OTEL env vars to vars Vite will proxy into the browser
+if (process.env.OTEL_EXPORTER_OTLP_ENDPOINT) {
+  process.env.VITE_OTEL_EXPORTER_OTLP_ENDPOINT = process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
+}
+if (process.env.OTEL_EXPORTER_OTLP_HEADERS) {
+  process.env.VITE_OTEL_EXPORTER_OTLP_HEADERS = process.env.OTEL_EXPORTER_OTLP_HEADERS;
+}
+if (process.env.OTEL_RESOURCE_ATTRIBUTES) {
+  process.env.VITE_OTEL_RESOURCE_ATTRIBUTES = process.env.OTEL_RESOURCE_ATTRIBUTES;
+}
+if (process.env.OTEL_SERVICE_NAME) {
+  process.env.VITE_OTEL_SERVICE_NAME = process.env.OTEL_SERVICE_NAME;
+}
 
 console.log('Using port and proxying to', {
   port,

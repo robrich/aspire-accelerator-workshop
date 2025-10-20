@@ -48,7 +48,7 @@
 </template>
 
 <script setup vapor lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 import { useFrameworkGet, useFrameworkNew, useFrameworkUpdate } from '@/hooks/use-framework';
 import { useVoteGet, useVoteScore } from '@/hooks/use-vote';
 import type { Framework } from '@/types/framework';
@@ -91,6 +91,20 @@ async function refresh() {
   await refreshFrameworks();
   await refreshVotes();
 }
+
+// Auto-refresh every 5 seconds while component is mounted
+let intervalId: number | undefined;
+onMounted(() => {
+  intervalId = window.setInterval(() => {
+    refresh();
+  }, 5000);
+});
+onUnmounted(() => {
+  if (intervalId) {
+    window.clearInterval(intervalId);
+    intervalId = undefined;
+  }
+});
 
 async function submitChangeFramework(updatedFramework: Framework) {
   await saveChangeFramework({ id: updatedFramework.id, body: updatedFramework });

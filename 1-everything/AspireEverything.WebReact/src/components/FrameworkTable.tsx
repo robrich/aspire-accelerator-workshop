@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFrameworkGet, useFrameworkNew, useFrameworkUpdate } from '@/hooks/use-framework';
 import { useVoteGet, useVoteScore } from '@/hooks/use-vote';
 import type { Framework } from '@/types/framework';
@@ -26,6 +26,14 @@ export default function FrameworkTable() {
     await refreshFrameworks();
     await refreshVotes();
   }, [refreshFrameworks, refreshVotes]);
+
+  // Auto-refresh every 5 seconds while component is mounted
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      refresh();
+    }, 5000);
+    return () => window.clearInterval(id);
+  }, [refresh]);
 
   const submitNewFramework = useCallback(async () => {
     const newFramework: Framework = { id: 0, name: newName };

@@ -9,6 +9,8 @@ This sample demonstrates a broad set of .NET Aspire features and patterns:
 - Running Node.js browser apps (React, Vue)
 - Proxying everything behind a YARP reverse proxy
 
+There is no tutorial here.  It's only an example.
+
 
 Projects and their Purpose
 --------------------------

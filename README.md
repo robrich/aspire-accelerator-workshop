@@ -1,5 +1,5 @@
-Aspire Accelerator: Fast-Track to Cloud-Native Development
-==========================================================
+Aspire Accelerator Workshop: Fast-Track to Cloud-Native Development
+===================================================================
 
 This is a comprehensive Aspire workshop to get you up-and-running with both development time and deployment skills. Learn how to build, orchestrate, and deploy cloud-native applications using Aspire.
 

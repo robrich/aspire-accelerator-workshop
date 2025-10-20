@@ -1,23 +1,6 @@
 Install Instructions
 ====================
 
-
-Table of Contents
------------------
-
-1. [Install an IDE](#1-install-an-ide)
-2. [Install the .NET 9 SDK](#2-install-the-net-9-sdk)
-3. [Install or upgrade the Aspire project templates](#3-install-or-upgrade-the-aspire-project-templates)
-4. [Install or upgrade the Aspire CLI](#4-install-or-upgrade-the-aspire-cli)
-5. [Install or upgrade the Azure Functions Runtime](#5-install-or-upgrade-the-azure-functions-runtime)
-6. [Upgrade the Azure Functions new project templates](#6-upgrade-the-azure-functions-new-project-templates)
-7. [Install the latest Node.js](#7-install-the-latest-nodejs)
-8. [Install a container runtime](#8-install-a-container-runtime)
-
-
-Install steps
--------------
-
 You'll need a few things installed to use the content in this workshop:
 
 1. Install an IDE:
@@ -85,6 +68,7 @@ You'll need a few things installed to use the content in this workshop:
    In Visual Studio:
 
    - Open Visual Studio
+   - On the right, click `Continue without code`
    - Go to Tools -> Options
    - On the left, in the Projects & Solutions section, choose Azure Functions
    - On the right click "Check for Updates"
@@ -118,7 +102,41 @@ You'll need a few things installed to use the content in this workshop:
 
    *Why?* A container runtime is needed to build, run, and test containerized applications and services locally.
 
-9. Turn on Kubernetes mode in your container runtime.
+9. Startup your container runtime and pull these Docker images we'll use today:
+
+   ```sh
+   docker pull node:alpine
+   docker pull nginx:alpine
+   docker pull mcr.microsoft.com/dotnet/sdk:9.0-alpine
+   docker pull mcr.microsoft.com/dotnet/aspnet:9.0-alpine
+   docker pull mcr.microsoft.com/dotnet/aspnet:9.0
+   docker pull mcr.microsoft.com/azure-functions/dotnet-isolated:4-dotnet-isolated9.0
+   docker pull mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest
+   docker pull mcr.microsoft.com/dotnet/nightly/yarp:2.3.0-preview.4
+   docker pull mcr.microsoft.com/azure-storage/azurite
+   docker pull mcr.microsoft.com/azure-storage/azurite:3.35.0
+   docker pull postgres:alpine
+   docker pull redis:alpine
+   docker pull redis
+   docker pull sosedoff/pgweb:latest
+   docker pull rediscommander/redis-commander:latest
+   docker pull busybox:latest
+   ```
+
+   Whether you're using Docker Desktop, Podman, or another container runtime, we'll still use these images from Docker Hub.
+
+   *Why?* We'll use these containers throughout the course.  Better to have them pulled ahead of time.  It may take some time.
+
+10. Clone this repository onto your machine.
+
+    *Why?* You'll modify the code in this repository as part of this course.
+
+
+
+Optional additional tools if you choose to deploy to Azure environments
+-----------------------------------------------------------------------
+
+1. Turn on Kubernetes mode in your container runtime.
 
    - In Docker Desktop, choose Settings -> Kubernetes -> Enable Kubernetes mode.
 
@@ -132,60 +150,28 @@ You'll need a few things installed to use the content in this workshop:
 
    *Why?*: You'll use Kubernetes in `5-deploy-kubernetes`.
 
-10. Pull these Docker images we'll use today:
+2. Install Helm, the Kubernetes package manager.
 
-    ```sh
-    docker pull node:alpine
-    docker pull nginx:alpine
-    docker pull mcr.microsoft.com/dotnet/sdk:9.0-alpine
-    docker pull mcr.microsoft.com/dotnet/aspnet:9.0-alpine
-    docker pull mcr.microsoft.com/dotnet/aspnet:9.0
-    docker pull mcr.microsoft.com/azure-functions/dotnet-isolated:4-dotnet-isolated9.0
-    docker pull mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest
-    docker pull mcr.microsoft.com/dotnet/nightly/yarp:2.3.0-preview.4
-    docker pull mcr.microsoft.com/azure-storage/azurite
-    docker pull mcr.microsoft.com/azure-storage/azurite:3.35.0
-    docker pull postgres:alpine
-    docker pull redis:alpine
-    docker pull redis
-    docker pull sosedoff/pgweb:latest
-    docker pull rediscommander/redis-commander:latest
-    docker pull busybox:latest
-    ```
+   See also: https://helm.sh/docs/intro/install/
 
-    *Why?* We'll use these containers throughout the course.  Better to have them pulled ahead of time.  It may take some time.
+   - Download: https://github.com/helm/helm/releases
+   - MacOS: `brew install helm`
+   - Chocolatey: `choco install kubernetes-helm`
+   - Winget: `winget install Helm.Helm`
 
-11. Install Helm, the Kubernetes package manager.
+   Verify installation:
 
-    See also: https://helm.sh/docs/intro/install/
+   ```sh
+   helm version
+   ```
 
-    - Download: https://github.com/helm/helm/releases
-    - MacOS: `brew install helm`
-    - Chocolatey: `choco install kubernetes-helm`
-    - Winget: `winget install Helm.Helm`
+   *Why?* You'll use Helm as you run the Kubernetes sample in `5-deploy-kubernetes`.
 
-    Verify installation:
-
-    ```sh
-    helm version
-    ```
-
-    *Why?* You'll use Helm as you run the Kubernetes sample in `5-deploy-kubernetes`.
-
-12. Clone this repository onto your machine.
-
-    *Why?* You'll modify the code in this repository as part of this course.
-
-
-
-Optional additional tools if you choose to deploy to Azure environments
------------------------------------------------------------------------
-
-1. Find an Azure Subscription where you can create resources freely.
+3. Find an Azure Subscription where you can create resources freely.
 
    You can create a free trial: https://azure.microsoft.com/en-us/pricing/purchase-options/azure-account
 
-2. Install the Azure CLI.
+4. Install the Azure CLI.
 
    See https://learn.microsoft.com/en-us/cli/azure/install-azure-cli for the instructions to your OS.
 
@@ -197,7 +183,7 @@ Optional additional tools if you choose to deploy to Azure environments
 
    *Why?* You will deploy to Azure Container Apps solution to Azure in `5-deploy-aca`.
 
-3. Install the Azure Developer CLI (azd) from https://aka.ms/install-azd
+5. Install the Azure Developer CLI (azd) from https://aka.ms/install-azd
 
    ```sh
    azd version

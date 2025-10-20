@@ -1,7 +1,7 @@
-React front-end to the Voting app
-=================================
+Vue.js front-end to the Voting app
+==================================
 
-An example frontend written in React and TypeScript.
+An example frontend written in Vue.js 3 and TypeScript.
 
 Note: All front-ends are the identical UX.
 
@@ -22,7 +22,7 @@ Alternatively, run the entire sample through Visual Studio or VS Code by launchi
 About the sample
 ----------------
 
-This app uses React, Vite, and TypeScript.
+This app uses Vue.js, Vite, and TypeScript.
 
 Vite is a great TypeScript development server, and also serves as a reverse-proxy to the backend APIs.
 

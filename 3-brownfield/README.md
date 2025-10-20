@@ -1,7 +1,7 @@
 Aspire Brownfield App
 =====================
 
-This demo shows how to upgrade an existing .NET web app to use Aspire.
+This tutorial shows how to upgrade an existing .NET web app to use Aspire.
 
 The `start` folder is before the upgrade.
 
@@ -31,34 +31,40 @@ Before the upgrade, launching the app is a bit involved.
 Upgrading the Solution
 ----------------------
 
-1. Open `AspireBrownfield.sln` in Visual Studio.
+1. Ensure you've installed everything from [Chapter 0](../0-install/README.md)
 
-2. Right-click on one of the existing projects, choose `Add`, and then choose `.NET Aspire`.  Answer yes to the questions.
+2. Ensure your container runtime is started.
+
+   Start Docker Desktop or Podman.
+
+3. Open `AspireBrownfield.sln` in Visual Studio.
+
+4. Right-click on one of the existing projects, choose `Add`, and then choose `.NET Aspire`.  Answer yes to the questions.
 
    This adds the AppHost and ServiceDefaults projects.
 
-3. Right-click the other existing project and do the same.
+5. Right-click the other existing project and do the same.
 
    This modifies the AppHost to reference this project too, and modifies the project to leverage ServiceDefault's best practices including OpenTelemetry setup, service health, and HttpClient retries.
 
-4. In the AppHost project, add Redis:
+6. In the AppHost project, add Redis:
 
    a. Manage NuGet packages for the AppHost project, and add this new package: `Aspire.Hosting.Redis`
 
    b. Add this code to the top of AppHost.cs:
 
-      ```c#
+      ```csharp
       var cache = builder.AddRedis("cache")
         .WithImageTag("alpine");
       ```
 
-5. Modify the API project to reference Redis:
+7. Modify the API project to reference Redis:
 
    a. Open `ApiService/appsettings.json`.  Notice that the connection string is named `Redis`.
 
    b. In `AppHost.cs`, modify the ApiService to look like this:
 
-      ```c#
+      ```csharp
       var apiservice = builder.AddProject<Projects.AspireBrownfield_ApiService>("apiservice")
         .WithReference(cache).WaitFor(cache);
       ```
@@ -69,7 +75,7 @@ Upgrading the Solution
 
       Modify the ApiService reference to look like this:
 
-      ```c#
+      ```csharp
       var apiservice = builder.AddProject<Projects.AspireBrownfield_ApiService>("apiservice")
         .WithReference(cache, "Redis").WaitFor(cache);
       ```
@@ -78,20 +84,20 @@ Upgrading the Solution
 
    **Note**: We could change the connection string name in the AppHost project, minimizing the changes to the existing application.
 
-6. Modify the Web project reference to reference Redis:
+8. Modify the Web project reference to reference Redis:
 
    Like we did for the API project, let's add a reference to the Redis cache with a named connection string:
 
-   ```c#
+   ```csharp
    var web = builder.AddProject<Projects.AspireBrownfield_Web>("web")
      .WithReference(cache, "Redis").WaitFor(cache);
    ```
 
-7. Modify the Web project to reference the API project for service discovery.
+9. Modify the Web project to reference the API project for service discovery.
 
    In AppHost.cs, change the web definition to this:
 
-   ```c#
+   ```csharp
    var web = builder.AddProject<Projects.AspireBrownfield_Web>("web")
      .WithReference(cache, "Redis").WaitFor(cache)
      .WithReference(apiservice).WaitFor(apiservice); // <-- add this line
@@ -99,37 +105,37 @@ Upgrading the Solution
 
    Now Aspire will add an environment variable with the randomly selected port for the API project.
 
-8. The Web project currently looks to `AppSettings:WeatherApi` for the URL to the API project.  We need to modify the app to use the newly injected environment variable from Aspire.
+10. The Web project currently looks to `AppSettings:WeatherApi` for the URL to the API project.  We need to modify the app to use the newly injected environment variable from Aspire.
 
-   a. Open `AspireBrownfield.Web/Program.cs`
+    a. Open `AspireBrownfield.Web/Program.cs`
 
-   b. Modify the line that gets the API's url:
+    b. Modify the line that gets the API's url:
 
-      ~~`string? apiUrl = builder.Configuration.GetValue<string>("AppSettings:WeatherApiUrl");`~~
+       ~~`string? apiUrl = builder.Configuration.GetValue<string>("AppSettings:WeatherApiUrl");`~~
 
-      becomes
+       becomes
 
-      ```c#
-      string? apiUrl = builder.Configuration.GetValue<string>("services:apiservice:https:0");
-      ```
+       ```csharp
+       string? apiUrl = builder.Configuration.GetValue<string>("services:apiservice:https:0");
+       ```
 
-      Note how we're using the name `apiservice` that we set in `.AddProject<T>("apiservice")`.
+       Note how we're using the name `apiservice` that we set in `.AddProject<T>("apiservice")`.
 
-   **Note**: In this case, we can't change the Aspire service discovery convention, so we must change the application.
+    **Note**: In this case, we can't change the Aspire service discovery convention, so we must change the application.
 
-9. In the deployed environment, we'll also need to change the way this configuration is set.  Do we need to change the Dockerfile?  Kubernetes YAML?  Azure WebApp settings?  DevOps pipelines?  Automated tests?  You'll need to carefully review the build and deploy steps to also leverage this new convention.
+11. In the deployed environment, we'll also need to change the way this configuration is set.  Do we need to change the Dockerfile?  Kubernetes YAML?  Azure WebApp settings?  DevOps pipelines?  Automated tests?  You'll need to carefully review the build and deploy steps to also leverage this new convention.
 
-   Note that environment variables generally can't use `:` so they use `__` instead.  So the environment variable injected in from Aspire - and the variable you'd set in Kubernetes / Azure WebApp / etc is `services__apiservice__https__0`.
+    Note that environment variables generally can't use `:` so they use `__` instead.  So the environment variable injected in from Aspire - and the variable you'd set in Kubernetes / Azure WebApp / etc is `services__apiservice__https__0`.
 
-   Since this workshop isn't deployed anywhere yet, there's nothing to do here.  Were this a production deployed app, we'd need to work carefully to execute this task.
+    Since this workshop isn't deployed anywhere yet, there's nothing to do here.  Were this a production deployed app, we'd need to work carefully to execute this task.
 
-10. Optional clean-up: Remove `AppSettings:WeatherApi`:
+12. Optional clean-up: Remove `AppSettings:WeatherApi`:
 
     In the Web project, in both `appsettings.json` and `appsettings.Development.json` we no longer need the `WeatherApi` reference.
 
     You can delete the `WeatherApi` line from both files.
 
-11. Optional clean-up: Remove `docker-compose.yaml`
+13. Optional clean-up: Remove `docker-compose.yaml`
 
     Now that we use Aspire to start the Redis container, we no longer need the docker-compose.yaml file.
 
@@ -154,3 +160,13 @@ After the upgrade, launching the app is super simple.
 3. Begin debugging.
 
 The Redis connection string gets auto-magically injected into both apps, and the API URL gets injected too.
+
+
+Optional: Your Project
+----------------------
+
+Now that you have experience adding Aspire to an existing project, you can be empowered to add Aspire to other projects.
+
+1. Locate a modern .NET solution (.NET 8 or better) you'd like to upgrade.  This could be a hobby project, a work project, an open source project, or any other project.
+
+2. Follow the above upgrade steps to add Aspire to your project too.

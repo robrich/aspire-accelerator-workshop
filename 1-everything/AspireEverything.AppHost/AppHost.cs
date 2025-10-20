@@ -4,7 +4,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 // When publishing, you run:
 // `aspire publish -o dist`
 // There is no flag saying where you'd like to publish to
-// Therefore you specify where you want to publish here:
+// FRAGILE: Therefore you specify where you want to publish here:
 string deployTo = "none";
 switch (deployTo)
 {
@@ -116,5 +116,11 @@ var gateway = builder.AddYarp("gateway")
 
         yarp.AddRoute(frontendReact); // or frontendReact or frontendVue or frontendBlazor
     });
+
+/* Uncomment to expose the gateway temporarily to the internet
+ * Ensure you install the devtunnel CLI: https://learn.microsoft.com/en-us/azure/developer/dev-tunnels/get-started#install
+builder.AddDevTunnel("tunnel")
+       .WithReference(gateway);
+*/
 
 builder.Build().Run();

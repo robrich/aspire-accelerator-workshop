@@ -118,6 +118,88 @@ You'll need a few things installed to use the content in this workshop:
 
    *Why?* A container runtime is needed to build, run, and test containerized applications and services locally.
 
-9. Clone this repository onto your machine.
+9. Turn on Kubernetes mode in your container runtime.
 
-   *Why?* You'll modify the code in this repository as part of this course.
+   - In Docker Desktop, choose Settings -> Kubernetes -> Enable Kubernetes mode.
+
+   - In Podman, Settings -> Resources -> Kind -> Create new Cluster.
+
+   Verify your cluster works as expected:
+
+   ```sh
+   kubectl version
+   ```
+
+   *Why?*: You'll use Kubernetes in `5-deploy-kubernetes`.
+
+10. Pull these Docker images we'll use today:
+
+    ```sh
+    docker pull node:alpine
+    docker pull nginx:alpine
+    docker pull mcr.microsoft.com/dotnet/sdk:9.0-alpine
+    docker pull mcr.microsoft.com/dotnet/aspnet:9.0-alpine
+    docker pull mcr.microsoft.com/dotnet/aspnet:9.0
+    docker pull mcr.microsoft.com/azure-functions/dotnet-isolated:4-dotnet-isolated9.0
+    docker pull mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest
+    docker pull mcr.microsoft.com/dotnet/nightly/yarp:2.3.0-preview.4
+    docker pull mcr.microsoft.com/azure-storage/azurite
+    docker pull postgres:alpine
+    docker pull redis:alpine
+    docker pull redis
+    docker pull sosedoff/pgweb:latest
+    docker pull rediscommander/redis-commander:latest
+    docker pull busybox:latest
+    ```
+
+    *Why?* We'll use these containers throughout the course.  Better to have them pulled ahead of time.  It may take some time.
+
+11. Install Helm, the Kubernetes package manager.
+
+    See also: https://helm.sh/docs/intro/install/
+
+    - Download: https://github.com/helm/helm/releases
+    - MacOS: `brew install helm`
+    - Chocolatey: `choco install kubernetes-helm`
+    - Winget: `winget install Helm.Helm`
+
+    Verify installation:
+
+    ```sh
+    helm version
+    ```
+
+    *Why?* You'll use Helm as you run the Kubernetes sample in `5-deploy-kubernetes`.
+
+12. Clone this repository onto your machine.
+
+    *Why?* You'll modify the code in this repository as part of this course.
+
+
+
+Optional additional tools if you choose to deploy to Azure environments
+-----------------------------------------------------------------------
+
+1. Find an Azure Subscription where you can create resources freely.
+
+   You can create a free trial: https://azure.microsoft.com/en-us/pricing/purchase-options/azure-account
+
+2. Install the Azure CLI.
+
+   See https://learn.microsoft.com/en-us/cli/azure/install-azure-cli for the instructions to your OS.
+
+   Verify installation:
+
+   ```sh
+   az login
+   ```
+
+   *Why?* You will deploy to Azure Container Apps solution to Azure in `5-deploy-aca`.
+
+3. Install the Azure Developer CLI (azd) from https://aka.ms/install-azd
+
+   ```sh
+   azd version
+   ```
+
+   *Why?* You will use `azd` when you deploy to Azure Container Apps in `5-deploy-aca`.

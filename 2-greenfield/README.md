@@ -1,7 +1,17 @@
 Aspire Greenfield App
 =====================
 
-This demo shows how to create a new Aspire app from the sample.
+This tutorial shows how to create a new Aspire app from the sample.
+
+
+Prerequisites
+-------------
+
+1. Ensure you've installed everything from [Chapter 0](../0-install/README.md)
+
+2. Ensure your container runtime is started.
+
+   Start Docker Desktop or Podman.
 
 
 New Project

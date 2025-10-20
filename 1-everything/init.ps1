@@ -1,5 +1,7 @@
 $ErrorActionPreference = "Stop"
 
+cp .env.example .env
+
 echo "VoteGet Azure Function: copying local.settings.json into place"
 cd AspireEverything.VoteGet
 cp local.settings.json.example local.settings.json

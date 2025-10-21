@@ -1,7 +1,7 @@
 Deploy with the Aspire CLI to Azure Container Apps
 ==================================================
 
-In this chapter, you'll deploy a solution to Azure Container Apps (ACA) using Aspire.
+In this chapter, you'll publish Bicep files using the Aspire CLI that can deploy to Azure Container Apps (ACA).
 
 Azure Container Apps (ACA) is a fully managed serverless container platform on Azure. It provides automatic scaling, built-in load balancing, secrets management, and seamless integration with other Azure services. ACA is ideal for microservices, APIs, web applications, and background jobs when managing Kubernetes YAML files is overwhelming.
 
@@ -19,23 +19,7 @@ Before starting, ensure you have:
 
    Start Docker Desktop or Podman.
 
-3. Ensure you have an Azure Subscription.
-
-   You can create a free trial: https://azure.microsoft.com/en-us/pricing/purchase-options/azure-account
-
-4. Ensure you're logged into the Azure CLI:
-
-   ```sh
-   az login
-   ```
-
-4. Ensure the Azure Developer CLI (azd) is on your path:
-
-   ```sh
-   azd version
-   ```
-
-5. Select a project to deploy. You could choose:
+3. Select a project to deploy. You could choose:
 
    - The greenfield application from Chapter 2
 
@@ -44,6 +28,25 @@ Before starting, ensure you have:
    - A brand new project you create with File -> New Project
 
    - A solution you've created elsewhere
+
+
+### Optional setup
+
+1. Ensure you have an Azure Subscription.
+
+   You can create a free trial: https://azure.microsoft.com/en-us/pricing/purchase-options/azure-account
+
+2. Ensure you're logged into the Azure CLI:
+
+   ```sh
+   az login
+   ```
+
+3. Ensure the Azure Developer CLI (azd) is on your path:
+
+   ```sh
+   azd version
+   ```
 
 
 Generating Azure Bicep files with Aspire CLI

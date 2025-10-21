@@ -1,7 +1,7 @@
 Deploy with the Aspire CLI to Docker Compose
 ============================================
 
-In this chapter, you'll deploy a solution to Docker Compose using Aspire.
+In this chapter, you'll publish a Docker Compose file using the Aspire CLI.
 
 Docker Compose is a great tool for local development, allowing you to start dependent applications in containers so you can focus on a specific application you want to develop.  For example, you could start the backend and data stores and focus on developing the React application - even if you don't have .NET installed.
 

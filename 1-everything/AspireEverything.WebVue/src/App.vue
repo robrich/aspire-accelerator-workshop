@@ -6,9 +6,7 @@ import FrameworkTable from '@/components/FrameworkTable.vue';
   <div class="container">
     <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
       <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-        <svg class="bi me-2" width="40" height="32" aria-hidden="true">
-          <use xlink:href="#bootstrap"></use>
-        </svg>
+        <img src="/vue.png" class="me-2" width="40" height="40" alt="Vue logo" />
         <span class="fs-4">Framework Bakeoff</span>
       </a>
     </header>

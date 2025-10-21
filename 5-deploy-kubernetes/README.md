@@ -1,7 +1,7 @@
 Deploy with the Aspire CLI to Kubernetes
 ========================================
 
-In this chapter, you'll deploy a solution to a Kubernetes Helm chart using Aspire.
+In this chapter, you'll publish a Kubernetes Helm chart using the Aspire CLI.
 
 Kubernetes is a powerful orchestrator for running containers in production-like environments. It provides built-in primitives for scaling, networking, secrets, and health checks. For local experimentation, we'll use a local cluster (Docker Desktop, Podman, kind, minikube, etc). For production, use a cloud service like AKS, EKS, GKE, or similar.
 

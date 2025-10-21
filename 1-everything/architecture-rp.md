@@ -7,7 +7,7 @@ In production, you'll include a reverse-proxy to eliminate CORS configuration an
 graph TB
     %% Services
     gateway[API Gateway<br/>YARP :8080]
-    frontend[Frontend app<br/>React/Vue/Blazor/etc]
+    frontend[Frontend app hosting<br/>React/Vue/Blazor/etc]
     frameworkApi[Framework API<br/>ASP.NET WebAPI]
     funcVoteGet[Vote Get Function<br/>Azure Function]
     funcVoteScore[Vote Score Function<br/>Azure Function]
@@ -30,13 +30,8 @@ graph TB
     %% Gateway routes
     gateway --> |/| frontend
     gateway --> |/api/vote/get| funcVoteGet
-    gateway --> |/api/vote/score/**| funcVoteScore
     gateway --> |/api/**| frameworkApi
-
-    %% Service dependencies
-    frontend --> frameworkApi
-    frontend --> funcVoteGet
-    frontend --> funcVoteScore
+    gateway --> |POST /api/vote/score/**| funcVoteScore
 
     frameworkApi --> frameworksTable
     frameworkApi --> redis
@@ -46,7 +41,7 @@ graph TB
 
     funcVoteScore --> votesTable
 
-    user((👤)) --> gateway
+    user(User's Browser runs frontend) --> gateway
 
     %% Styling
     classDef database fill:#f9f,stroke:#333,stroke-width:2px

@@ -28,8 +28,8 @@ graph TB
 
     %% Service dependencies
     frontend --> |/api/vote/get| funcVoteGet
-    frontend --> |/api/vote/score/**| funcVoteScore
     frontend --> |/api/**| frameworkApi
+    frontend --> |POST /api/vote/score/**| funcVoteScore
 
     frameworkApi --> frameworksTable
     frameworkApi --> votesTable
@@ -40,7 +40,7 @@ graph TB
 
     funcVoteScore --> votesTable
 
-    user((👤)) --> frontend
+    user(User's Browser runs frontend) --> frontend
 
     %% Styling
     classDef database fill:#f9f,stroke:#333,stroke-width:2px

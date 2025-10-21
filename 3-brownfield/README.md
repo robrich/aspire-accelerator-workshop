@@ -39,6 +39,8 @@ Upgrading the Solution
 
 3. Open `AspireBrownfield.sln` in Visual Studio.
 
+   **Note**: There is no easy way to do this in VS Code.  Vote for this feature at https://github.com/dotnet/aspire/issues/10975
+
 4. Right-click on one of the existing projects, choose `Add`, and then choose `.NET Aspire`.  Answer yes to the questions.
 
    This adds the AppHost and ServiceDefaults projects.

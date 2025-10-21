@@ -79,6 +79,7 @@ var frontendVue = builder.AddNpmApp("frontendVue", "../AspireEverything.WebVue",
     .PublishAsDockerFile();
 if (builder.ExecutionContext.IsRunMode)
 {
+    // if running from VS or VS Code, we want to use the dynamic port
     frontendVue.WithHttpEndpoint(env: "PORT");
 }
 else
@@ -95,6 +96,7 @@ var frontendReact = builder.AddNpmApp("frontendReact", "../AspireEverything.WebR
     .PublishAsDockerFile();
 if (builder.ExecutionContext.IsRunMode)
 {
+    // if running from VS or VS Code, we want to use the dynamic port
     frontendReact.WithHttpEndpoint(env: "PORT");
 }
 else

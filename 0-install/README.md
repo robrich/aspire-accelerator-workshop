@@ -105,21 +105,26 @@ You'll need a few things installed to use the content in this workshop:
 9. Startup your container runtime and pull these Docker images we'll use today:
 
    ```sh
-   docker pull node:alpine
-   docker pull nginx:alpine
-   docker pull mcr.microsoft.com/dotnet/sdk:9.0-alpine
-   docker pull mcr.microsoft.com/dotnet/aspnet:9.0-alpine
-   docker pull mcr.microsoft.com/dotnet/aspnet:9.0
-   docker pull mcr.microsoft.com/azure-functions/dotnet-isolated:4-dotnet-isolated9.0
-   docker pull mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest
-   docker pull mcr.microsoft.com/dotnet/nightly/yarp:2.3.0-preview.4
-   docker pull mcr.microsoft.com/azure-storage/azurite
-   docker pull mcr.microsoft.com/azure-storage/azurite:3.35.0
-   docker pull postgres:alpine
-   docker pull redis:alpine
+   # These images are first used by Aspire when debugging:
    docker pull redis
+   docker pull postgres:alpine
    docker pull sosedoff/pgweb:latest
    docker pull rediscommander/redis-commander:latest
+   docker pull mcr.microsoft.com/dotnet/nightly/yarp:2.3.0-preview.4
+   docker pull mcr.microsoft.com/azure-storage/azurite:3.35.0
+
+   # These images are first used by aspire publish:
+   docker pull mcr.microsoft.com/dotnet/aspnet:9.0
+   docker pull mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest
+
+   # These images are first used by the hand-crafted docker-compose and k8s helm chart:
+   docker pull node:alpine
+   docker pull nginx:alpine
+   docker pull redis:alpine
+   docker pull mcr.microsoft.com/dotnet/sdk:9.0-alpine
+   docker pull mcr.microsoft.com/dotnet/aspnet:9.0-alpine
+   docker pull mcr.microsoft.com/azure-functions/dotnet-isolated:4-dotnet-isolated9.0
+   docker pull mcr.microsoft.com/azure-storage/azurite
    docker pull busybox:latest
    ```
 

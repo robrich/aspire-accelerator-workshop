@@ -11,6 +11,8 @@ This sample demonstrates a broad set of .NET Aspire features and patterns:
 
 There is no tutorial here.  It's only an example.
 
+[**Getting Started**](#getting-started-with-development)
+
 
 Projects and their Purpose
 --------------------------
@@ -24,54 +26,42 @@ See the full architecture diagrams in this folder:
 
 ### Aspire projects
 
-- **AspireEverything.AppHost**
-  Orchestrates all services and resources for local development. Starts containers, sets up environment variables, and launches all other projects.
+- **AspireEverything.AppHost** Starts all other projects.
 
-- **AspireEverything.ServiceDefaults**
-  Common setup of .NET best practices including OpenTelemetry logs, traces, and metrics; HttpClient retries; and health monitoring.
+- **AspireEverything.ServiceDefaults** Collection of best practices including OpenTelemetry setup.
 
 ### Data stores
 
-- **PostgreSQL**
-  A great open-source database.  It contains 2 tables:
+- **PostgreSQL** Open-source relational database.  It contains 2 tables:
 
   - frameworks: the rows in the UI list
   - votes: the number of votes for each row
 
-- **Redis**
-  A great key/value store useful for caching.
+- **Redis** Key/value database for caching.
 
-- **postgres-init**
-  The Postgres database initialization script.
+- **postgres-init** Postgres initialization SQL.
 
 ### Backends
 
 This shows 2 options: running in containers, and running in a series of functions.  In a production solution, you'd choose one or the other.
 
-- **AspireEverything.FrameworkApi**
-  This is an example of running a rich API in a container.  This API has CRUD methods for the framework table.
+- **AspireEverything.FrameworkApi** A full ASP.NET app to CRUD public.frameworks table. Deployed in a container.
 
-- **AspireEverything.VoteGet**
-  This is an example of building an API surface as a series of functions.  The VoteGet function queries data from the votes table.
+- **AspireEverything.VoteGet** A function app to query public.votes table. Deployed to Azure Functions.
 
-- **AspireEverything.VoteScore**
-  Azure Function (C#) for scoring votes. Processes and updates the votes table.
+- **AspireEverything.VoteScore** A function app to update public.votes table. Deployed to Azure Functions.
 
-- **AspireEverything.VoteData**
-  The common libraries across the Azure functions for accessing the votes table.
+- **AspireEverything.VoteData** Common libraries used by both function apps.
 
 ### Frontends
 
 This solution shows 3 options: React, Vue.js, and a Blazor standalone app.  In a production solution, you'd likely choose one frontend technology.  In this example, each of the frontends is visually and functionally identical.
 
-- **AspireEverything.WebBlazor**
-  Standalone Blazor WebAssembly frontend. Provides a .NET-based browser UI for interacting with the backend.  Sadly, this app can't reference ServiceDefaults because it is built into static HTML, JS, and CSS files.  Therefore there's no OpenTelemetry in this app.
+- **AspireEverything.WebBlazor** A Blazor WebAssembly standalone app. OpenTelemetry doesn't work here.
 
-- **AspireEverything.WebReact**
-  The UI built with React, TypeScript, and Vite.
+- **AspireEverything.WebReact** A frontend in React, TypeScript, and Vite.
 
-- **AspireEverything.WebVue**
-  The UI built with Vue.js, TypeScript, and Vite.
+- **AspireEverything.WebVue** A frontend in Vue.js, TypeScript, and Vite.
 
 ### Reverse Proxy
 
@@ -88,42 +78,30 @@ All the reverse proxies follow these rules:
 
 Here's the reverse proxies in use in this example:
 
-- [**YARP**](./AspireEverything.AppHost/AppHost.cs#L108-L118)
-  Yet Another Reverse Proxy is a .NET, config-based reverse proxy. See the routes configured near the bottom of `AppHost.cs`. YARP runs as a separate container.
+- [**YARP**](./AspireEverything.AppHost/AppHost.cs#L108-L118) is an ASP.NET middleware that runs as a separate container. See routes at the bottom of `AppHost.cs`.
 
-- [**Vite**](./AspireEverything.WebReact/vite.config.ts)
-  For both Node.js frontend apps during development time, Vite accepts Aspire's service discovery environment variables, and sets up the reverse proxy rules.
+- [**Vite**](./AspireEverything.WebReact/vite.config.ts) Used by both Node.js frontends during development. Vite shims Aspire env vars to the browser. See `vite.config.ts`.
 
-  Towards production, Vite build will render the assets into static files, and the Dockerfile injects these files into an Nginx container.  Therefore in production there is no Vite reverse proxy.
+- [**Kubernetes Ingress**](./k8s/templates/ingress.yaml), a built-in Kubernetes tool. This is the simplest mechanism if you're using Kubernetes.
 
-- [**Kubernetes Ingress**](./k8s/templates/ingress.yaml)
-  In the k8s folder, we use a Kubernetes Ingress as a reverse proxy.  If you choose to deploy to Kubernetes, this is likely the simplest mechanism to install a reverse proxy.
-
-- [**Blazor's proxy.config.json**](./AspireEverything.WebBlazor/proxy.config.json)
-  Blazor has a mechanism for setting up the dev-time reverse proxy for Blazor standalone apps.  Sadly, Aspire doesn't launch Blazor with `dotnet run`, so Blazor's reverse proxy doesn't work.
+- [**Blazor's proxy.config.json**](./AspireEverything.WebBlazor/proxy.config.json), a dev-time reverse proxy for Blazor standalone which doesn't work with Aspire.
 
 
 ### Deployment
 
 This solution includes examples of many (conflicting) deployment strategies.  In a typical solution you would only have a single deployment strategy.  The examples here are for demonstration only.  In a production application, you would choose the one you like best, and delete the others.
 
-- **Docker Compose**
-  Docker Compose is a great development tool for propping up dependent resources that are not the focus of your current task.  The Aspire CLI can scaffold a docker-compose.yaml file from an AppHost.
+- **Docker Compose**, a great development tool.
 
-- **Kubernetes**
-  Kubernetes is a enterprise-grade production deployment system.  The Aspire CLI can scaffold Kubernetes YAML files that can deploy containerized resources.
+- **Kubernetes**, an enterprise-grade production deployment system for containers.
 
-- **Azure Container Apps (ACA)**
-  Azure Container Apps is the launch example of the Aspire deployment system.  ACA is an abstraction over top of Kubernetes that drastically simplifies the YAML.  When the Aspire CLI publishes to ACA, it creates Bicep files that uses Azure resources and cloud best practices.
+- **Azure Container Apps (ACA)**, a simpler Azure abstraction over Kubernetes.
 
-- **Manual docker-compose.yaml file**
-  We've committed an example [`docker-compose.yaml`] file tuned to local development.  It uses Azurite, an Azure Storage emulator in a container to make the entire process self-contained.  This could be great if you want to try out a portion of the solution without wanting to install dependencies.
+- **Manual `docker-compose.yaml` file**, a hand-crafted compose file to run locally.
 
-- **Manual k8s yaml files**
-  We've committed the `k8s` folder of Kubernetes YAML files.  Unlike the Aspire CLI, we don't depend on any Bicep here.  It also means we need to push everything into a container.  This solution uses Azurite, an Azure Storage emulator, and Postgres and Redis containers.  If you're looking to deploy Kubernetes to production, you should use PaaS solutions: Azure Storage, Postgres for Azure, and Azure Redis Cache.
+- **Manual k8s yaml files** Look in the `k8s` folder for a hand-crafted Helm chart that runs locally. In production, use PaaS data stores.
 
-- **Don't deploy through Aspire**
-  Perhaps your solution has already solved deployment another way or your organization requires deployment using very specific patterns and tools.  In that case, don't use Aspire for deployment, and only use it for development time.  This is a great use of Aspire.
+- **Don't deploy through Aspire** Aspire is awesome, but if you have a corporate deployment standard, use Aspire for development, and don't use Aspire for deployment.
 
 
 Getting Started with Development

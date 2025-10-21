@@ -37,9 +37,9 @@ See https://github.com/dotnet/aspire/tree/main/src/Aspire.Hosting.Docker
 
 1. Open your solution in Visual Studio, VS Code, or your favorite IDE.
 
-2. To the `AppHost` project, add the NuGet package `Aspire.Hosting.Docker`.
+2. To the `AppHost` project, add the NuGet package `Aspire.Hosting.Docker`. As of this writing, it's still in preview, so also check the `Include prerelease` box.
 
-3. At the top of `AppHost.cs` add this line:
+3. Towards the top of `AppHost.cs` after the `var builder = ...` line, add this line:
 
    ```csharp
    builder.AddDockerComposeEnvironment("compose");
@@ -55,7 +55,7 @@ See https://github.com/dotnet/aspire/tree/main/src/Aspire.Hosting.Docker
    aspire publish -o dist
    ```
 
-   You could adjust this to output to any folder.
+   You could output to any folder, not just `dist`.
 
    **Note**: As part of scaffolding the Docker Compose file, it also built all the containers using the .NET SDK or the Dockerfiles specified.
 
@@ -87,9 +87,9 @@ You may choose to:
 Optional: Start the created `docker-compose.yaml` file
 ------------------------------------------------------
 
-1. In the `dist` folder, read through the `docker-compose.yaml` file and find the `ports` sections, noting the ports you'll use for each resource.
+1. In the `dist` folder, open `.env` and set the `CACHE_PASSWORD` to not be blank.
 
-2. Optional: adjust any configuration details in `dist/.env`.
+2. In the `dist` folder, open `docker-compose.yaml` and adjust anything that bothers you.
 
 3. Open a terminal in the target directory (`dist`).
 
@@ -99,8 +99,8 @@ Optional: Start the created `docker-compose.yaml` file
 
    ```sh
    az login
-   az group create -n AspireDockerGroup --location "Central US"
-   az deployment group create -n AspireDocker -g AspireDockerGroup --template-file main.bicep --parameters ...
+   az group create -n AspireDockerRG --location "Central US"
+   az deployment group create -n AspireDocker -g AspireDockerRG --template-file main.bicep --parameters ...
    ```
 
 5. Run the Docker Compose file.
@@ -111,9 +111,13 @@ Optional: Start the created `docker-compose.yaml` file
 
    If you'd like, add `-d` to run in daemon or detached mode.
 
-6. Open a browser to each port identified in step 1 above and run the application.
+6. In a new terminal, run `docker container list` and look for the exposed ports.
 
-7. When you're done, stop the application:
+7. Open a browser to each published port and run the application.
+
+   **Note**: The Aspire dashboard is not exposed to your machine because in the docker-compose file at the top you'll note an `expose` line, not a `ports` line.  `expose` will expose this container's port(s) to other containers while `ports` will expose it to the host.  See also https://stackoverflow.com/questions/40801772/what-is-the-difference-between-ports-and-expose-in-docker-compose
+
+8. When you're done, stop the application:
 
    ```sh
    docker compose down

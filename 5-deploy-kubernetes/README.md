@@ -44,9 +44,9 @@ See https://github.com/dotnet/aspire/tree/main/src/Aspire.Hosting.Kubernetes
 
 1. Open your solution in Visual Studio, VS Code, or your favorite IDE.
 
-2. To the `AppHost` project, add the NuGet package `Aspire.Hosting.Kubernetes`.
+2. To the `AppHost` project, add the NuGet package `Aspire.Hosting.Kubernetes`. As of this writing, it's still in preview, so also check the `Include prerelease` box.
 
-3. At the top of `AppHost.cs` add this line:
+3. Towards the top of `AppHost.cs` after the `var builder = ...` line, add this line:
 
    ```csharp
    builder.AddKubernetesEnvironment("k8s");
@@ -62,7 +62,7 @@ See https://github.com/dotnet/aspire/tree/main/src/Aspire.Hosting.Kubernetes
    aspire publish -o dist
    ```
 
-   You could adjust this to output to any folder.
+   You could output to any folder, not just `dist`.
 
    **Note**: As part of scaffolding the Helm chart, it didn't build the containers.  You may need to build the containers separately.  See `build-manual.sh` for inspiration.
 

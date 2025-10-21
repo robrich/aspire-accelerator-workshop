@@ -5,11 +5,13 @@ bin
 obj
 dist
 !**/lib/bootstrap/dist
+TestResults
 results
 # temp files
 .DS_Store
 *.tmp
 *.log
+.aspire
 # user-specific files
 .vs
 *.user

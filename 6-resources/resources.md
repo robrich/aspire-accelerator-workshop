@@ -6,7 +6,6 @@ Official Documentation & Roadmaps
 
 - [Aspire Docs](https://learn.microsoft.com/en-us/dotnet/aspire/)
 - [Aspire Roadmap for 2025 & 2026](https://github.com/dotnet/aspire/discussions/10644)
-- [Aspire development burn-down chart](https://github.com/orgs/dotnet/projects/288)
 - [Aspire Integrations Overview](https://learn.microsoft.com/en-us/dotnet/aspire/fundamentals/integrations-overview)
 - [Aspire Community Toolkit Overview](https://learn.microsoft.com/en-us/dotnet/aspire/community-toolkit/overview)
 - [Aspire Deployment](https://learn.microsoft.com/dotnet/aspire/deployment/)

@@ -58,7 +58,7 @@ See https://learn.microsoft.com/en-us/dotnet/aspire/deployment/aspire-deploy/aca
 
 2. To the `AppHost` project, add the NuGet package `Aspire.Hosting.Azure.AppContainers`.
 
-3. At the top of `AppHost.cs` add this line:
+3. Towards the top of `AppHost.cs` after the `var builder = ...` line, add this line:
 
    ```csharp
    builder.AddAzureContainerAppEnvironment("aca");
@@ -74,7 +74,7 @@ See https://learn.microsoft.com/en-us/dotnet/aspire/deployment/aspire-deploy/aca
    aspire publish -o dist
    ```
 
-   You could adjust this to output to any folder.
+   You could output to any folder, not just `dist`.
 
    **Note**: As part of scaffolding the bicep files, it didn't build the containers nor push them to Azure Container Registry.  You may need to build the containers separately.  See `build-manual.sh` for inspiration.
 
